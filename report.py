@@ -17,7 +17,7 @@ uid = input("请输入要举报的作品UID : ")
 if len(uid) == 0:
     exit("?")
 
-report_json = json.dumps({"work_id": uid, "report_reason": "其他", "report_describe": "1"})
+report_json = json.dumps({"work_id": uid, "report_reason": "违法违规", "report_describe": "作品有问题"})
 
 def worker(q, zid):
     while not q.empty():
