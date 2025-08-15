@@ -37,3 +37,7 @@ def get_api(path, token):
     }
     post_text = json.dumps(data)
     return requests.get(url, headers=header)
+
+
+if __name__ == '__main__':
+    print("请勿直接运行此脚本")

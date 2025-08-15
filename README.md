@@ -80,6 +80,62 @@
 
 将文件夹下生成的xlsx文件拖到上一层目录
 
+## 开发
+
+程序已简化API调用流程，请在开始前引用 control 库
+
+```python
+import control
+```
+
+### 值
+
+#### API路径
+
+- 类型: String
+- 取值: 取 https://api.codemao.cn/ 路径后的所有内容
+- 举例: `nemo/v2/works/114514/collection`
+
+#### POST报文
+
+- 类型: JSON
+- 取值：JSON格式即可
+
+#### Token
+
+- 类型: String
+- 取值：填入一个Token，多线程请自己分配
+
+### 用法
+
+#### POST请求
+
+```python
+import control
+
+control.call_api(API路径, POST报文, Token)
+```
+
+#### GET请求
+
+```python
+import control
+
+control.get_api(API路径, Token)
+```
+
+#### 返回
+
+与 requests 返回值获取方式一致
+
+```python
+import control
+
+print(control.get_api("test/api","Token...").status_code)
+```
+
+这个示例可以打印请求后的状态码
+
 ## 注意事项
 
 ### 表格文件的格式
