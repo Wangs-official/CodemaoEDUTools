@@ -26,6 +26,8 @@ import os
 coloredlogs.install(level='INFO', fmt='%(asctime)s - %(funcName)s: %(message)s')
 
 """POST方式调用API"""
+
+
 def API_Post(Path: str, PostData: dict, Token: str) -> requests.Response:
     headers = {
         "Accept": "*/*",
@@ -42,6 +44,8 @@ def API_Post(Path: str, PostData: dict, Token: str) -> requests.Response:
 
 
 """POST方式匿名调用API"""
+
+
 def API_Post_WithoutToken(Path: str, PostData: dict) -> requests.Response:
     headers = {
         "Accept": "*/*",
@@ -57,6 +61,8 @@ def API_Post_WithoutToken(Path: str, PostData: dict) -> requests.Response:
 
 
 """GET方式调用API"""
+
+
 def API_Get(Path: str, Token: str) -> requests.Response:
     headers = {
         "Accept": "*/*",
@@ -72,10 +78,11 @@ def API_Get(Path: str, Token: str) -> requests.Response:
 
 
 """确定Token数量"""
-def Check_TokenFile(Path: str, ViewLog: bool) -> Optional[int]:
+
+
+def Check_TokenFile(Path: str) -> Optional[int]:
     if not os.path.exists(Path):
-        if ViewLog:
-            logging.error(f"找不到Token文件: {Path}")
+        logging.error(f"找不到Token文件: {Path}")
         return 0
     else:
         with open(Path, "r", encoding="utf-8") as file:
@@ -85,18 +92,27 @@ def Check_TokenFile(Path: str, ViewLog: bool) -> Optional[int]:
 
 
 """登录并获取用户Token"""
+
+
 def GetMyToken(Username: str, Password: str) -> str:
     response = API_Post_WithoutToken(Path="/tiger/v3/web/accounts/login",
                                      PostData={'pid': '65edCTyg',
                                                'identity': Username,
                                                'password': Password})
+    if response.status_code == 200:
+        logging.info(response.text)
+        return str(json.loads(response.text).get("auth", {}).get("token"))
+    else:
+        f"请求失败，状态码: {response.status_code}, 响应: {response.text[:50]}"
+        return ""
 
 
 """签订友好协议"""
-def Signature(Path: str, ViewLog: bool) -> bool:
+
+
+def Signature(Path: str) -> bool:
     if not os.path.exists(Path):
-        if ViewLog:
-            logging.error(f"找不到Token文件: {Path}")
+        logging.error(f"找不到Token文件: {Path}")
         return False
     elif Check_TokenFile(Path, False) == 0:
         logging.warning(f"可用的Token数为0")
@@ -133,10 +149,11 @@ def Signature(Path: str, ViewLog: bool) -> bool:
 
 
 """关注用户"""
-def FollowUser(Path: str, UserID: str, ViewLog: bool) -> bool:
+
+
+def FollowUser(Path: str, UserID: str) -> bool:
     if not os.path.exists(Path):
-        if ViewLog:
-            logging.error(f"找不到Token文件: {Path}")
+        logging.error(f"找不到Token文件: {Path}")
         return False
     elif Check_TokenFile(Path, False) == 0:
         logging.warning(f"可用的Token数为0")
@@ -173,12 +190,13 @@ def FollowUser(Path: str, UserID: str, ViewLog: bool) -> bool:
 
 
 """点赞作品"""
-def LikeWork(Path: str, WorkID: str, ViewLog: bool) -> bool:
+
+
+def LikeWork(Path: str, WorkID: str) -> bool:
     if not os.path.exists(Path):
-        if ViewLog:
-            logging.error(f"找不到Token文件: {Path}")
+        logging.error(f"找不到Token文件: {Path}")
         return False
-    elif Check_TokenFile(Path, False) == 0:
+    elif Check_TokenFile(Path) == 0:
         logging.warning(f"可用的Token数为0")
         return False
     else:
@@ -213,12 +231,13 @@ def LikeWork(Path: str, WorkID: str, ViewLog: bool) -> bool:
 
 
 """收藏作品"""
-def CollectionWork(Path: str, WorkID: str, ViewLog: bool) -> bool:
+
+
+def CollectionWork(Path: str, WorkID: str) -> bool:
     if not os.path.exists(Path):
-        if ViewLog:
-            logging.error(f"找不到Token文件: {Path}")
+        logging.error(f"找不到Token文件: {Path}")
         return False
-    elif Check_TokenFile(Path, False) == 0:
+    elif Check_TokenFile(Path) == 0:
         logging.warning(f"可用的Token数为0")
         return False
     else:
@@ -253,12 +272,13 @@ def CollectionWork(Path: str, WorkID: str, ViewLog: bool) -> bool:
 
 
 """批量举报作品"""
-def ReportWork(Path: str, WorkID: str, ViewLog: bool) -> bool:
+
+
+def ReportWork(Path: str, WorkID: str) -> bool:
     if not os.path.exists(Path):
-        if ViewLog:
-            logging.error(f"找不到Token文件: {Path}")
+        logging.error(f"找不到Token文件: {Path}")
         return False
-    elif Check_TokenFile(Path, False) == 0:
+    elif Check_TokenFile(Path) == 0:
         logging.warning(f"可用的Token数为0")
         return False
     else:
@@ -295,12 +315,13 @@ def ReportWork(Path: str, WorkID: str, ViewLog: bool) -> bool:
 
 
 """批量在作品下发送回复"""
-def SendReview(Path: str, ReviewText: str, WorkID: str, ViewLog: bool) -> bool:
+
+
+def SendReview(Path: str, ReviewText: str, WorkID: str) -> bool:
     if not os.path.exists(Path):
-        if ViewLog:
-            logging.error(f"找不到Token文件: {Path}")
+        logging.error(f"找不到Token文件: {Path}")
         return False
-    elif Check_TokenFile(Path, False) == 0:
+    elif Check_TokenFile(Path) == 0:
         logging.warning(f"可用的Token数为0")
         return False
     else:
@@ -336,7 +357,9 @@ def SendReview(Path: str, ReviewText: str, WorkID: str, ViewLog: bool) -> bool:
 
 
 """浏览作品"""
-def ViewWork(Token: str, WorkID: str, ViewLog: bool) -> bool:
+
+
+def ViewWork(Token: str, WorkID: str) -> bool:
     try:
         response = API_Get(f"/creation-tools/v1/works/{WorkID}",
                            Token=Token)
