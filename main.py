@@ -1,4 +1,5 @@
 """
+====================
 Author: WangZixu
 欢迎使用 CodemaoEDUTools!
 https://github.com/Wangs-official/CodemaoEDUTools/
@@ -10,18 +11,21 @@ import CodemaoEDUTools
 ====================
 请在开始使用前运行
 pip3 install -r requirements.txt
+====================
+Version: 1.1.3
+====================
 """
-from concurrent.futures import ThreadPoolExecutor
-from fake_useragent import UserAgent
-import coloredlogs
-import argparse
-import requests
-import logging
-import certifi
-import random
-import time
 import json
+import logging
 import os
+from concurrent.futures import ThreadPoolExecutor
+
+import coloredlogs
+import pandas as pd
+import requests
+from fake_useragent import UserAgent
+from openpyxl import Workbook
+from openpyxl import load_workbook
 
 coloredlogs.install(level='INFO', fmt='%(asctime)s - %(funcName)s: %(message)s')
 
@@ -57,6 +61,24 @@ def PostWithoutTokenAPI(Path: str, PostData: dict) -> requests.Response:
     }
     logging.error(f"https://api.codemao.cn{Path}", )
     return requests.post(url=f"https://api.codemao.cn{Path}",
+                         headers=headers,
+                         json=PostData)
+
+
+"""使用POST方式调用EDUAPI"""
+
+
+def PostEduAPI(Path: str, PostData: dict, Token: str) -> requests.Response:
+    headers = {
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        'User-Agent': UserAgent().random,
+        "authorization": f"Bearer {Token}"
+    }
+    return requests.post(url=f"https://eduzone.codemao.cn{Path}",
                          headers=headers,
                          json=PostData)
 
@@ -294,7 +316,7 @@ def ReportWork(Path: str, WorkID: str, Reason: str, Describe: str) -> bool:
         return True
 
 
-"""在作品下发送回复"""
+"""回复作品"""
 
 
 def SendReviewToWork(Path: str, WorkID: str, ReviewText: str) -> bool:
@@ -348,6 +370,100 @@ def ViewWork(Token: str, WorkID: str) -> bool:
             return False
     except Exception as e:
         logging.error(f"请求异常: {str(e)}")
+        return False
+
+
+"""添加新的班级"""
+
+
+def CreateClassOnEdu(Token: str, ClassName: str) -> str:
+    try:
+        response = PostEduAPI(Path="/edu/zone/class",
+                              PostData={"name": ClassName},
+                              Token=Token)
+        if response.status_code == 200:
+            return str(json.loads(response.text).get("id"))
+        else:
+            logging.error(
+                f"请求失败，状态码: {response.status_code}, 响应: {response.text[:50]}")
+            return "0"
+    except Exception as e:
+        logging.error(f"请求异常: {str(e)}")
+        return "0"
+
+
+"""添加新的学生到班级"""
+
+
+def CreateStudentOnEdu(Token: str, ClassID: str, StudentNameList: list[str]) -> bytes:
+    try:
+        response = PostEduAPI(Path=f"/edu/zone/class/{ClassID}/students",
+                              PostData={"student_names": StudentNameList},
+                              Token=Token)
+        if response.status_code == 200:
+            return response.content
+        else:
+            logging.error(
+                f"请求失败，状态码: {response.status_code}, 响应: {response.text[:50]}")
+            return None
+    except Exception as e:
+        logging.error(f"请求异常: {str(e)}")
+        return None
+
+
+"""合并生成的表格"""
+
+
+def MergeStudentXls(InputFolder: str, OutputFile: str) -> bool:
+    try:
+        if os.path.exists(InputFolder):
+            main = Workbook().active
+            RowCount = 1
+            for FileName in os.listdir(InputFolder):
+                if FileName.endswith(".xlsx"):
+                    FilePath = os.path.join(InputFolder, FileName)
+                    Df = pd.read_excel(FilePath, skiprows=3)
+                    for index, row in Df.iterrows():
+                        main.append(row.tolist())
+                        RowCount += 1
+            OutPutFile = OutputFlile
+            return True
+        else:
+            logging.error(f"找不到输入的文件夹: {InputFolder}")
+            return False
+    except Exception as e:
+        logging.error(f"出现异常: {str(e)}")
+        return False
+
+
+"""登录Edu账号"""
+
+
+def LoginUseEdu(InputXlsx: str, OutputFile: str) -> bool:
+    CannotLogin = 0
+    if os.path.exists(InputXlsx):
+        Sheet = load_workbook(InputXlsx).active
+        AllAccount = Sheet.max_row
+        logging.info(f"登录账号共{AllAccount}个")
+        for _ in range(AllAccount):
+            try:
+                UserList = []
+                PasswordList = []
+                for Row in Sheet.iter_rows(min_row=1, min_col=2, max_col=3, values_only=True):
+                    User, Password = Row
+                    UserList.append(user)
+                    PasswordList.append(password)
+                LoginReponse = GetUserToken(UserList[_], PasswordList[_])
+                with open(OutputFile, 'a') as file:
+                    file.write(token + "\n")
+            except TypeError:
+                CannotLogin += 1
+                logging.error(
+                    f"请求失败，状态码: {response.status_code}, 响应: {response.text[:50]}")
+        logging.warning(f"未成功登录数量: {CannotLogin}，占比{CannotLogin / AllAccount}")
+        return True
+    else:
+        logging.error(f"找不到输入的Xlsx文件: {InputXlsx}")
         return False
 
 
