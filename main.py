@@ -18,6 +18,7 @@ import coloredlogs
 import argparse
 import requests
 import logging
+import certifi
 import random
 import time
 import json
@@ -38,7 +39,7 @@ def API_Post(Path: str, PostData: dict, Token: str) -> requests.Response:
         'User-Agent': UserAgent().random,
         "authorization": Token
     }
-    return requests.post(url=f"https://api.codemao.com{Path}",
+    return requests.post(url=f"https://api.codemao.cn{Path}",
                          headers=headers,
                          json=PostData)
 
@@ -55,7 +56,8 @@ def API_Post_WithoutToken(Path: str, PostData: dict) -> requests.Response:
         "Content-Type": "application/json",
         'User-Agent': UserAgent().random,
     }
-    return requests.post(url=f"https://api.codemao.com{Path}",
+    logging.error(f"https://api.codemao.cn{Path}", )
+    return requests.post(url=f"https://api.codemao.cn{Path}",
                          headers=headers,
                          json=PostData)
 
@@ -73,7 +75,7 @@ def API_Get(Path: str, Token: str) -> requests.Response:
         'User-Agent': UserAgent().random,
         "authorization": Token
     }
-    return requests.get(url=f"https://api.codemao.com{Path}",
+    return requests.get(url=f"https://api.codemao.cn{Path}",
                         headers=headers)
 
 
@@ -100,10 +102,9 @@ def GetMyToken(Username: str, Password: str) -> str:
                                                'identity': Username,
                                                'password': Password})
     if response.status_code == 200:
-        logging.info(response.text)
         return str(json.loads(response.text).get("auth", {}).get("token"))
     else:
-        f"请求失败，状态码: {response.status_code}, 响应: {response.text[:50]}"
+        logging.error(f"请求失败，状态码: {response.status_code}, 响应: {response.text[:50]}")
         return ""
 
 
