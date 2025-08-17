@@ -13,7 +13,6 @@ pip3 install -r requirements.txt
 """
 from concurrent.futures import ThreadPoolExecutor
 from fake_useragent import UserAgent
-from typing import Optional
 import coloredlogs
 import argparse
 import requests
@@ -29,7 +28,7 @@ coloredlogs.install(level='INFO', fmt='%(asctime)s - %(funcName)s: %(message)s')
 """POST方式调用API"""
 
 
-def API_Post(Path: str, PostData: dict, Token: str) -> requests.Response:
+def PostAPI(Path: str, PostData: dict, Token: str) -> requests.Response:
     headers = {
         "Accept": "*/*",
         "Accept-Encoding": "gzip, deflate, br",
@@ -47,7 +46,7 @@ def API_Post(Path: str, PostData: dict, Token: str) -> requests.Response:
 """POST方式匿名调用API"""
 
 
-def API_Post_WithoutToken(Path: str, PostData: dict) -> requests.Response:
+def PostWithoutTokenAPI(Path: str, PostData: dict) -> requests.Response:
     headers = {
         "Accept": "*/*",
         "Accept-Encoding": "gzip, deflate, br",
@@ -65,7 +64,7 @@ def API_Post_WithoutToken(Path: str, PostData: dict) -> requests.Response:
 """GET方式调用API"""
 
 
-def API_Get(Path: str, Token: str) -> requests.Response:
+def GetAPI(Path: str, Token: str) -> requests.Response:
     headers = {
         "Accept": "*/*",
         "Accept-Encoding": "gzip, deflate, br",
@@ -82,7 +81,7 @@ def API_Get(Path: str, Token: str) -> requests.Response:
 """确定Token数量"""
 
 
-def Check_TokenFile(Path: str) -> Optional[int]:
+def CheckToken(Path: str) -> int:
     if not os.path.exists(Path):
         logging.error(f"找不到Token文件: {Path}")
         return 0
@@ -96,11 +95,10 @@ def Check_TokenFile(Path: str) -> Optional[int]:
 """登录并获取用户Token"""
 
 
-def GetMyToken(Username: str, Password: str) -> str:
-    response = API_Post_WithoutToken(Path="/tiger/v3/web/accounts/login",
-                                     PostData={'pid': '65edCTyg',
-                                               'identity': Username,
-                                               'password': Password})
+def GetUserToken(Username: str, Password: str) -> str:
+    response = PostWithoutTokenAPI(Path="/tiger/v3/web/accounts/login", PostData={'pid': '65edCTyg',
+                                                                                  'identity': Username,
+                                                                                  'password': Password})
     if response.status_code == 200:
         return str(json.loads(response.text).get("auth", {}).get("token"))
     else:
@@ -111,11 +109,11 @@ def GetMyToken(Username: str, Password: str) -> str:
 """签订友好协议"""
 
 
-def Signature(Path: str) -> bool:
+def SignatureUser(Path: str) -> bool:
     if not os.path.exists(Path):
         logging.error(f"找不到Token文件: {Path}")
         return False
-    elif Check_TokenFile(Path, False) == 0:
+    elif CheckToken(Path) == 0:
         logging.warning(f"可用的Token数为0")
         return False
     else:
@@ -125,11 +123,7 @@ def Signature(Path: str) -> bool:
 
         def CallToAPI_Sign(Token: str) -> bool:
             try:
-                response = API_Post(
-                    Path="/nemo/v3/user/level/signature",
-                    PostData={},
-                    Token=Token
-                )
+                response = PostAPI(Path="/nemo/v3/user/level/signature", PostData={}, Token=Token)
 
                 if response.status_code == 200:
                     return True
@@ -156,7 +150,7 @@ def FollowUser(Path: str, UserID: str) -> bool:
     if not os.path.exists(Path):
         logging.error(f"找不到Token文件: {Path}")
         return False
-    elif Check_TokenFile(Path, False) == 0:
+    elif CheckToken(Path) == 0:
         logging.warning(f"可用的Token数为0")
         return False
     else:
@@ -166,11 +160,7 @@ def FollowUser(Path: str, UserID: str) -> bool:
 
         def CallToAPI_Follow(Token: str) -> bool:
             try:
-                response = API_Post(
-                    Path=f"/nemo/v2/user/{UserID}/follow",
-                    PostData={},
-                    Token=Token
-                )
+                response = PostAPI(Path=f"/nemo/v2/user/{UserID}/follow", PostData={}, Token=Token)
 
                 if response.status_code == 204:
                     return True
@@ -197,7 +187,7 @@ def LikeWork(Path: str, WorkID: str) -> bool:
     if not os.path.exists(Path):
         logging.error(f"找不到Token文件: {Path}")
         return False
-    elif Check_TokenFile(Path) == 0:
+    elif CheckToken(Path) == 0:
         logging.warning(f"可用的Token数为0")
         return False
     else:
@@ -207,11 +197,7 @@ def LikeWork(Path: str, WorkID: str) -> bool:
 
         def CallToAPI_Like(Token: str) -> bool:
             try:
-                response = API_Post(
-                    Path=f"/nemo/v2/works/{WorkID}/like",
-                    PostData={},
-                    Token=Token
-                )
+                response = PostAPI(Path=f"/nemo/v2/works/{WorkID}/like", PostData={}, Token=Token)
 
                 if response.status_code == 200:
                     return True
@@ -238,7 +224,7 @@ def CollectionWork(Path: str, WorkID: str) -> bool:
     if not os.path.exists(Path):
         logging.error(f"找不到Token文件: {Path}")
         return False
-    elif Check_TokenFile(Path) == 0:
+    elif CheckToken(Path) == 0:
         logging.warning(f"可用的Token数为0")
         return False
     else:
@@ -248,11 +234,7 @@ def CollectionWork(Path: str, WorkID: str) -> bool:
 
         def CallToAPI_Collection(Token: str) -> bool:
             try:
-                response = API_Post(
-                    Path=f"/nemo/v2/works/{WorkID}/collection",
-                    PostData={},
-                    Token=Token
-                )
+                response = PostAPI(Path=f"/nemo/v2/works/{WorkID}/collection", PostData={}, Token=Token)
 
                 if response.status_code == 200:
                     return True
@@ -272,14 +254,14 @@ def CollectionWork(Path: str, WorkID: str) -> bool:
         return True
 
 
-"""批量举报作品"""
+"""举报作品"""
 
 
-def ReportWork(Path: str, WorkID: str) -> bool:
+def ReportWork(Path: str, WorkID: str, Reason: str, Describe: str) -> bool:
     if not os.path.exists(Path):
         logging.error(f"找不到Token文件: {Path}")
         return False
-    elif Check_TokenFile(Path) == 0:
+    elif CheckToken(Path) == 0:
         logging.warning(f"可用的Token数为0")
         return False
     else:
@@ -289,13 +271,10 @@ def ReportWork(Path: str, WorkID: str) -> bool:
 
         def CallToAPI_ReportWork(Token: str) -> bool:
             try:
-                response = API_Post(
-                    Path=f"/nemo/v2/report/work",
-                    PostData={"work_id": WorkID,
-                              "report_reason": "违法违规",
-                              "report_describe": "作品有问题"},
-                    Token=Token
-                )
+                response = PostAPI(Path=f"/nemo/v2/report/work", PostData={"work_id": WorkID,
+                                                                           "report_reason": Reason,
+                                                                           "report_describe": Describe},
+                                   Token=Token)
 
                 if response.status_code == 200:
                     return True
@@ -315,14 +294,14 @@ def ReportWork(Path: str, WorkID: str) -> bool:
         return True
 
 
-"""批量在作品下发送回复"""
+"""在作品下发送回复"""
 
 
-def SendReview(Path: str, ReviewText: str, WorkID: str) -> bool:
+def SendReviewToWork(Path: str, WorkID: str, ReviewText: str) -> bool:
     if not os.path.exists(Path):
         logging.error(f"找不到Token文件: {Path}")
         return False
-    elif Check_TokenFile(Path) == 0:
+    elif CheckToken(Path) == 0:
         logging.warning(f"可用的Token数为0")
         return False
     else:
@@ -332,12 +311,9 @@ def SendReview(Path: str, ReviewText: str, WorkID: str) -> bool:
 
         def CallToAPI_Review(Token: str) -> bool:
             try:
-                response = API_Post(
-                    Path=f"/creation-tools/v1/works/{WorkID}/comment",
-                    PostData={"emoji_content": "",
-                              "content": ReviewText},
-                    Token=Token
-                )
+                response = PostAPI(Path=f"/creation-tools/v1/works/{WorkID}/comment", PostData={"emoji_content": "",
+                                                                                                "content": ReviewText},
+                                   Token=Token)
 
                 if response.status_code == 201:
                     return True
@@ -362,8 +338,7 @@ def SendReview(Path: str, ReviewText: str, WorkID: str) -> bool:
 
 def ViewWork(Token: str, WorkID: str) -> bool:
     try:
-        response = API_Get(f"/creation-tools/v1/works/{WorkID}",
-                           Token=Token)
+        response = GetAPI(f"/creation-tools/v1/works/{WorkID}", Token=Token)
 
         if response.status_code == 200:
             return True
