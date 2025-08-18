@@ -195,7 +195,7 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - 返回类型: `bool`
 - 返回值: 请求完成后，返回**True**
 
-## EDU
+## EDU (4)
 
 `*EDU`
 

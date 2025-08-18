@@ -98,6 +98,11 @@ https://shequ.codemao.cn/community/1635142 ，这篇文章是我之前写的，�
 
 给我和他们一个 **⭐Star️** 哦
 
+[Aumiao](https://github.com/Aurzex/Aumiao)
+
 [编程猫API文档](https://api.docs.codemao.work/)
 
-[Aumiao](https://github.com/Aurzex/Aumiao)
+本项目是以下项目的改体：
+
+- CodemaoCommunityHistory/CodemaoEduAutoReg
+- CodemaoCommunityHistory/CodemaoPL
