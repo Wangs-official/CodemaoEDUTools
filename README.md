@@ -44,7 +44,7 @@ pandas
 
 ### 表格文件的格式
 
-`LoginUseEdu()` 函数所需 (-el)
+`LoginUseEdu()` 函数所需
 
 由函数`MergeStudentXls()`生成的表格可直接使用 (-em)
 

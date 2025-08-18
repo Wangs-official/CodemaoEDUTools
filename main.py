@@ -4,7 +4,7 @@ Author: WangZixu
 欢迎使用 CodemaoEDUTools!
 https://github.com/Wangs-official/CodemaoEDUTools/
 ====================
-请阅读 README.md 中的命令行参数，或在你的程序中添加此库
+请阅读 doc/cli.md 中的命令行参数，或在你的程序中添加此库
 import CodemaoEDUTools
 ====================
 开发者不对您使用本项目造成的风险负责，请自行考虑是否使用，谢谢！
@@ -12,10 +12,9 @@ import CodemaoEDUTools
 请在开始使用前运行
 pip3 install -r requirements.txt
 ====================
-Version: 1.1.3
-====================
 """
 import json
+import argparse
 import logging
 import os
 from concurrent.futures import ThreadPoolExecutor
@@ -28,6 +27,7 @@ from openpyxl import Workbook
 from openpyxl import load_workbook
 
 coloredlogs.install(level='INFO', fmt='%(asctime)s - %(funcName)s: %(message)s')
+version = "1.1.4"
 
 """POST方式调用API"""
 
@@ -467,5 +467,242 @@ def LoginUseEdu(InputXlsx: str, OutputFile: str) -> bool:
         return False
 
 
+"""参数处理器"""
+
+
+def CreateParser():
+    parser = argparse.ArgumentParser(
+        description=f'欢迎使用 CodemaoEDUTools! 当前版本: v{version}',
+        epilog='示例: python3 main.py check-token'
+    )
+
+    global_group = parser.add_argument_group('全局参数')
+    global_group.add_argument(
+        '-tf', '--token-file',
+        help='Token文件路径',
+        default='tokens.txt'
+    )
+
+    subparsers = parser.add_subparsers(dest='command', help='可用命令')
+
+    # Check_TokenFile(Path: str)
+
+    check_tokenfile_parser = subparsers.add_parser(
+        'check-token',
+        help='查看一个Token文件内，有多少个Token（读取行数）'
+    )
+
+    # GetUserToken(Username: str, Password: str)
+
+    getusertoken_parser = subparsers.add_parser(
+        'get-token',
+        help='登录以获取一个用户的Token'
+    )
+
+    getusertoken_parser.add_argument(
+        '-u', '--username',
+        required=True,
+        help='用户名（手机号）'
+    )
+
+    getusertoken_parser.add_argument(
+        '-p', '--password',
+        required=True,
+        help='密码'
+    )
+
+    # SignatureUser(Path: str)
+
+    signature_parser = subparsers.add_parser(
+        'signature',
+        help='签订友好协议，推荐在使用其他功能前统一签订一次友好协议，防止出现无法请求的情况'
+    )
+
+    # FollowUser(Path: str, UserID: str)
+
+    followuser_parser = subparsers.add_parser(
+        'follow-user',
+        help='批量关注一个用户，高情商就是刷粉丝'
+    )
+
+    followuser_parser.add_argument(
+        '-uid', '--user-id',
+        required=True,
+        help='训练师编号'
+    )
+
+    # LikeWork(Path: str, WorkID: str)
+    likework_parser = subparsers.add_parser(
+        'like-work',
+        help='批量点赞一个作品'
+    )
+
+    likework_parser.add_argument(
+        '-wid', '--work-id',
+        required=True,
+        help='作品ID'
+    )
+
+    # CollectionWork(Path: str, WorkID: str)
+
+    collectwork_parser = subparsers.add_parser(
+        'collect-work',
+        help='批量收藏一个作品'
+    )
+
+    collectwork_parser.add_argument(
+        '-wid', '--work-id',
+        required=True,
+        help='作品ID'
+    )
+
+    # ReportWork(Path: str, WorkID: str, Reason: str, Describe: str)
+    reportwork_parser = subparsers.add_parser(
+        'report-work',
+        help='批量举报一个作品，请勿大量Token举报'
+    )
+
+    reportwork_parser.add_argument(
+        '-wid', '--work-id',
+        required=True,
+        help='作品ID'
+    )
+
+    reportwork_parser.add_argument(
+        '-r', '--report-reason',
+        required=True,
+        help='原因，请参考文档给出的可用方式'
+    )
+
+    reportwork_parser.add_argument(
+        '-d', '--report-describe',
+        required=True,
+        help='举报理由'
+    )
+
+    # SendReviewToWork(Path: str, WorkID: str, ReviewText: str)
+    sendrevietowork_parser = subparsers.add_parser(
+        'review-work',
+        help='在一个作品下，批量发送同样的评论'
+    )
+
+    sendrevietowork_parser.add_argument(
+        '-wid', '--work-id',
+        required=True,
+        help='作品ID'
+    )
+
+    sendrevietowork_parser.add_argument(
+        '-r', '--review-text',
+        required=True,
+        help='评论内容'
+    )
+
+    # ViewWork(Token: str, WorkID: str)
+    viewwork_parser = subparsers.add_parser(
+        'view-work',
+        help='给作品加一个浏览，如果要一直刷，只需要循环这个函数就可以，一个Token就够'
+    )
+
+    viewwork_parser.add_argument(
+        '-t', '--one-token',
+        required=True,
+        help='一个可用Token'
+    )
+
+    viewwork_parser.add_argument(
+        '-wid', '--work-id',
+        required=True,
+        help='作品ID'
+    )
+
+    # CreateClassOnEdu(Token: str, ClassName: str)
+
+    createclassedu_parser = subparsers.add_parser(
+        'create-class',
+        help='在Edu里添加一个新的班级'
+    )
+
+    createclassedu_parser.add_argument(
+        '-t', '--token',
+        required=True,
+        help='Edu Token'
+    )
+
+    createclassedu_parser.add_argument(
+        '-cn', '--class-name',
+        required=True,
+        help='班级名称，遵循官方命名规则'
+    )
+
+    # CreateStudentOnEdu(Token: str, ClassID: str, StudentNameList: list[str])
+
+    createstudentedu_parser = subparsers.add_parser(
+        'create-student',
+        help='批量把创建新的学生并添加到班级内'
+    )
+
+    createstudentedu_parser.add_argument(
+        '-t', '--token',
+        required=True,
+        help='Edu Token'
+    )
+
+    createstudentedu_parser.add_argument(
+        '-cid', '--class-id',
+        required=True,
+        help='班级ID'
+    )
+
+    createstudentedu_parser.add_argument(
+        '-sl', '--student-name-list',
+        required=True,
+        help='学生名字的列表，最多100个学生，学生命名遵循官方命名规则'
+    )
+
+    # MergeStudentXls(InputFolder: str, OutputFile:str)
+
+    mergestudentxls_parser = subparsers.add_parser(
+        'merge-xls',
+        help='如果要合成为一个xlsx文件用于登录，请使用此函数'
+    )
+
+    mergestudentxls_parser.add_argument(
+        '-if', '--input-xls-folder',
+        required=True,
+        help='含有多个.xls文件的文件夹'
+    )
+
+    mergestudentxls_parser.add_argument(
+        '-o', '--output-xls',
+        required=True,
+        help='输出文件名，需要填写.xlsx后缀'
+    )
+
+    # LoginUseEdu(InputXlsx:str, OutputFile:str)
+
+    loginedu_parser = subparsers.add_parser(
+        'login-edu',
+        help='批量登录所有在xlsx内保存的账号密码，并打印Token到指定的文件内'
+    )
+
+    loginedu_parser.add_argument(
+        '-i', '--input-xlsx',
+        required=True,
+        help='含有账号密码的xlsx表格文件的路径'
+    )
+
+    loginedu_parser.add_argument(
+        '-o', '--output-txt',
+        required=True,
+        help='输出文件名，需要填写.txt后缀'
+    )
+
+    # End
+
+    return parser
+
+
 if __name__ == '__main__':
-    pass
+    parser = CreateParser()
+    args = parser.parse_args()
