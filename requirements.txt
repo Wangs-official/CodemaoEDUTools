@@ -1,0 +1,6 @@
+fake_useragent
+coloredlogs
+argparse
+requests
+openpyxl
+pandas

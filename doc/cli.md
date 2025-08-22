@@ -9,7 +9,7 @@
 ```
 usage: main.py [-h] [-tf TOKEN_FILE] {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,view-work,create-class,create-student,merge-xls,login-edu,version} ...
 
-欢迎使用 CodemaoEDUTools! 当前版本: v1.1.5_NT
+欢迎使用 CodemaoEDUTools! 当前版本: v1.1.5
 
 positional arguments:
   {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,view-work,create-class,create-student,merge-xls,login-edu,version}
@@ -47,6 +47,10 @@ options:
 ## 获取版本
 
 `python3 main.py version`
+
+## 获得指令帮助
+
+`python3 main.py -h`
 
 ## 文档提示
 
@@ -128,6 +132,8 @@ options:
 ### 添加新的学生到班级
 
 `create-student -t <Edu Token> -cid <班级ID> -sl <学生名字的列表> -o <*.xls>`
+
+> 注意！学生列表请使用单引号包裹，否则会导致终端误解析！
 
 ### 合并生成的表格
 

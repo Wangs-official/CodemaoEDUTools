@@ -85,8 +85,8 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 
 登录以获取一个用户的Token
 
-- 返回类型: `str`
-- 返回值: 可用于请求的Token
+- 返回类型: `str | bool`
+- 返回值: 可用于请求的Token，请求失败时，返回False
 
 ## 用户 (2)
 
