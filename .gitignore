@@ -1,4 +1,8 @@
-.DS_Store
 .idea
+venv
+
+.DS_Store
 *.pyc
-*.txt
+*.xls
+*.xlsx
+tokens.txt

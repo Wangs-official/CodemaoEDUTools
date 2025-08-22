@@ -83,10 +83,10 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - Username: 用户名（手机号）
 - Password: 密码
 
-获取一个用户的Token
+登录以获取一个用户的Token
 
-- 返回类型: `str`
-- 返回值: 可用于请求的Token
+- 返回类型: `str | bool`
+- 返回值: 可用于请求的Token，请求失败时，返回False
 
 ## 用户 (2)
 
@@ -121,7 +121,7 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 
 ### 点赞作品
 
-`LikeWork(Path: str, WorkID: str) `
+`LikeWork(Path: str, WorkID: str)`
 
 - Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
 - WorkID: 作品ID
@@ -133,7 +133,7 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 
 ### 收藏作品
 
-`CollectionWork(Path: str, WorkID: str) `
+`CollectionWork(Path: str, WorkID: str)`
 
 - Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
 - WorkID: 作品ID
@@ -170,13 +170,13 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - 返回类型: `bool`
 - 返回值: 请求完成后，返回**True**
 
-### 回复作品
+### 评论作品
 
 `SendReviewToWork(Path: str, WorkID: str, ReviewText: str)`
 
 - Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
 - WorkID: 作品ID
-- ReviewText: 回复内容
+- ReviewText: 评论内容
 
 在一个作品下，批量发送同样的评论
 
@@ -195,7 +195,7 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - 返回类型: `bool`
 - 返回值: 请求完成后，返回**True**
 
-## EDU
+## EDU (4)
 
 `*EDU`
 
@@ -219,7 +219,7 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - ClassID: 班级ID，自行抓包获取，或使用`CreateClassOnEdu`函数返回值
 - StudentNameList: 学生名字的列表，最多100个学生，学生命名遵循官方命名规则
 
-批量把学生添加到班级内
+批量把创建新的学生并添加到班级内
 
 - 返回类型: `bytes`
 - 返回值: 请求完成后，返回含有学生账号密码表的excel二进制内容（遵循官方）。请将返回内容转存到以`.xls`结尾的表格文件中。如果请求失败，则返回None
