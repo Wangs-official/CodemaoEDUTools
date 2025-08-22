@@ -7,10 +7,12 @@
 ## 可用指令
 
 ```
-usage: main.py [-h] [-tf TOKEN_FILE] {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,view-work,create-class,create-student,merge-xls,login-edu} ...
+usage: main.py [-h] [-tf TOKEN_FILE] {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,view-work,create-class,create-student,merge-xls,login-edu,version} ...
+
+欢迎使用 CodemaoEDUTools! 当前版本: v1.1.5_NT
 
 positional arguments:
-  {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,view-work,create-class,create-student,merge-xls,login-edu}
+  {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,view-work,create-class,create-student,merge-xls,login-edu,version}
                         可用命令
     check-token         查看一个Token文件内，有多少个Token（读取行数）
     get-token           登录以获取一个用户的Token
@@ -25,6 +27,7 @@ positional arguments:
     create-student      批量把创建新的学生并添加到班级内
     merge-xls           如果要合成为一个xlsx文件用于登录，请使用此函数
     login-edu           批量登录所有在xlsx内保存的账号密码，并打印Token到指定的文件内
+    version             获取CET版本
 
 options:
   -h, --help            show this help message and exit
@@ -32,11 +35,18 @@ options:
 全局参数:
   -tf, --token-file TOKEN_FILE
                         Token文件路径
+
+示例: python3 main.py check-token
+
 ```
 
 ## 全局参数
 
 `-tf`: Token文件路径，这个参数的默认值是`tokens.txt`
+
+## 获取版本
+
+`python3 main.py version`
 
 ## 文档提示
 
@@ -117,7 +127,7 @@ options:
 
 ### 添加新的学生到班级
 
-`create-student -t <Edu Token> -cid <班级ID> -sl <学生名字的列表>`
+`create-student -t <Edu Token> -cid <班级ID> -sl <学生名字的列表> -o <*.xls>`
 
 ### 合并生成的表格
 

@@ -27,7 +27,7 @@ from openpyxl import Workbook
 from openpyxl import load_workbook
 
 coloredlogs.install(level='INFO', fmt='%(asctime)s - %(funcName)s: %(message)s')
-version = "1.1.4"
+version = "1.1.5_NT"
 
 """POST方式调用API"""
 
@@ -45,7 +45,6 @@ def PostAPI(Path: str, PostData: dict, Token: str) -> requests.Response:
 def PostWithoutTokenAPI(Path: str, PostData: dict) -> requests.Response:
     headers = {"Accept": "*/*", "Accept-Encoding": "gzip, deflate, br", "Accept-Language": "zh-CN,zh;q=0.9",
                "Connection": "keep-alive", "Content-Type": "application/json", 'User-Agent': UserAgent().random, }
-    logging.error(f"https://api.codemao.cn{Path}", )
     return requests.post(url=f"https://api.codemao.cn{Path}", headers=headers, json=PostData)
 
 
@@ -509,13 +508,15 @@ def CreateParser():
     createstudentedu_parser.add_argument('-sl', '--student-name-list', required=True,
                                          help='学生名字的列表，最多100个学生，学生命名遵循官方命名规则')
 
+    createstudentedu_parser.add_argument('-o', '-output-xls', required=True, help='输出文件名，需要填写.xls后缀')
+
     # MergeStudentXls(InputFolder: str, OutputFile:str)
 
     mergestudentxls_parser = subparsers.add_parser('merge-xls', help='如果要合成为一个xlsx文件用于登录，请使用此函数')
 
     mergestudentxls_parser.add_argument('-if', '--input-xls-folder', required=True, help='含有多个.xls文件的文件夹')
 
-    mergestudentxls_parser.add_argument('-o', '--output-xls', required=True, help='输出文件名，需要填写.xlsx后缀')
+    mergestudentxls_parser.add_argument('-o', '--output-xlsx', required=True, help='输出文件名，需要填写.xlsx后缀')
 
     # LoginUseEdu(InputXlsx:str, OutputFile:str)
 
@@ -526,6 +527,10 @@ def CreateParser():
 
     loginedu_parser.add_argument('-o', '--output-txt', required=True, help='输出文件名，需要填写.txt后缀')
 
+    # Version
+
+    getversion_parser = subparsers.add_parser('version', help='获取CET版本')
+
     # End
 
     return parser
@@ -534,3 +539,57 @@ def CreateParser():
 if __name__ == '__main__':
     parser = CreateParser()
     args = parser.parse_args()
+    # 处理
+    if args.command == 'check-token':
+        CheckToken(args.token_file)
+
+    if args.command == 'get-token':
+        logging.info(GetUserToken(args.username, args.password))
+
+    if args.command == 'signature':
+        if SignatureUser(args.token_file):
+            logging.info('执行成功')
+
+    if args.command == 'follow-user':
+        if FollowUser(args.token_file, args.user_id):
+            logging.info('执行成功')
+
+    if args.command == 'like-work':
+        if LikeWork(args.token_file, args.work_id):
+            logging.info('执行成功')
+
+    if args.command == 'collect-work':
+        if CollectionWork(args.token_file, args.work_id):
+            logging.info('执行成功')
+
+    if args.command == 'report-work':
+        if ReportWork(args.token_file, args.work_id, args.report_reason, args.report_describe):
+            logging.info('执行成功')
+
+    if args.command == 'review-work':
+        if SendReviewToWork(args.token_file, args.work_id, args.review_text):
+            logging.info('执行成功')
+
+    if args.command == 'view-work':
+        if ViewWork(args.one_token, args.work_id):
+            logging.info('执行成功')
+
+    if args.command == 'create-class':
+        logging.info(f'Class ID: {CreateClassOnEdu(args.token, args.class_name)}')
+
+    if args.command == 'create-student':
+        with open(args.output_xls, "wb") as f:
+            f.write(CreateStudentOnEdu(args.token, args.class_id, args.student_name_list))
+            f.close()
+        logging.info(f'执行成功，学生密码表已保存到: {args.output_xls}')
+
+    if args.command == 'merge-xls':
+        if MergeStudentXls(args.input_xls_folder, args.output_xlsx):
+            logging.info(f'执行成功，合并的文件已保存到：{args.output_xlsx}')
+
+    if args.command == 'login-edu':
+        if LoginUseEdu(args.input_xlsx, args.output_txt):
+            logging.info(f'执行成功，已将登录的Token保存到：{args.output_txt}')
+
+    if args.command == 'version':
+        logging.info(f'CET版本: v{version}\nhttps://github.com/Wangs-official/CodemaoEDUTools/')
