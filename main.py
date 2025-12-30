@@ -28,7 +28,7 @@ from openpyxl import Workbook
 from openpyxl import load_workbook
 
 coloredlogs.install(level='INFO', fmt='%(asctime)s - %(funcName)s: %(message)s')
-version = "1.1.5_NT"
+version = "1.1.6_NT"
 max_workers = 8
 
 """POST方式调用API"""
@@ -407,7 +407,7 @@ def LoginUseEdu(InputXlsx: str, OutputFile: str) -> bool:
         for _ in range(AllAccount):
             UserList = []
             PasswordList = []
-            for Row in Sheet.iter_rows(min_row=1, min_col=2, max_col=3, values_only=True):
+            for Row in Sheet.iter_rows(min_row=1, min_col=3, max_col=4, values_only=True):
                 User, Password = Row
                 UserList.append(User)
                 PasswordList.append(Password)
@@ -416,7 +416,7 @@ def LoginUseEdu(InputXlsx: str, OutputFile: str) -> bool:
                 CannotLogin += 1
             else:
                 with open(OutputFile, 'a') as f:
-                    file.write(LoginReponse + "\n")
+                    f.write(LoginReponse + "\n")
         logging.warning(f"未成功登录数量: {CannotLogin}，占比{(CannotLogin / AllAccount) * 100}%")
         return True
     else:
