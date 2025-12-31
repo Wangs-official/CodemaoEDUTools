@@ -28,8 +28,10 @@ from openpyxl import Workbook
 from openpyxl import load_workbook
 
 coloredlogs.install(level='INFO', fmt='%(asctime)s - %(funcName)s: %(message)s')
+
 version = "1.1.7_NT"
 max_workers = 8
+student_names = '["xvbnmklq","asdfghjk","qwertyui","zxcvbnml","poiuytre","lkjhgfds","mnbvcxza","plokmijn","uhbygvtd","crfvtgby","edcrfvtg","qazwsxed","rfvtgbyh","nujmikol","zxasqwde","plmnkoij","bvcdxsza","qwermnbp","asxcvgfr","lpoikmju","yhnujmik","tgbzdxew","rfvgyhuj","edcwsxqa","zaqxswcd","vfrcdews","bgtnhyuj","mkiopluj","nhybtgvr","cdexswza","qwerfdsa","zxcvfdsa","poiuytrw","lkjhgfda","mnbvcxzs","asdfqwer","zxcvqwer","poiulkjh","mnbvcxas","qwertzui","yxcvbnmq","plokmnji","uhbgyvft","crfvtgyn","edcrfvbg","qazwsxrf","rfvtgbyu","nujmiklp","zxasqwed","plmnkoji","bvcdxsaz","qwermnbo","asxcvfgd","lpoikmjn","yhnujmki","tgbzdxec","rfvgyhuk","edcwsxqz","zaqxswce","vfrcdewa","bgtnhyum","mkioplun","nhybtgvf","cdexswzb","qwerfdsz","zxcvfdsz","poiuytrq","lkjhgfdz","mnbvcxzc","asdfqwez","zxcvqwez","poiulkjm","mnbvcxaq","qwertzuy","yxcvbnmr","plokmnjh","uhbgyvfr","crfvtgyb","edcrfvbn","qazwsxre","rfvtgbyi","nujmiklj","zxasqweg","plmnkojh","bvcdxsay","qwermnbu","asxcvfgh","lpoikmjh","yhnujmko","tgbzdxer","rfvgyhun","edcwsxqv","zaqxswec","vfrcdewq","bgtnhyup","mkiopluh","nhybtgvc","cdexswzg","qwerfdsx","zxcvfdsx"]'
 
 """POST方式调用API"""
 
@@ -537,17 +539,17 @@ def CreateParser():
 
     createstudentedu_parser.add_argument('-cid', '--class-id', required=True, help='班级ID')
 
-    createstudentedu_parser.add_argument('-sl', '--student-name-list', required=True,
-                                         type=json.loads, help='学生名字的列表，最多100个学生，学生命名遵循官方命名规则')
+    createstudentedu_parser.add_argument('-sl', '--student-name-list', required=False,
+                                         type=json.loads, default=student_names, help='学生名字的列表，最多100个学生，学生命名遵循官方命名规则')
 
-    createstudentedu_parser.add_argument('-o', '--output-xls', required=True, help='输出文件名，需要填写.xls后缀')
+    createstudentedu_parser.add_argument('-o', '--output-xls', required=False, default='output.xls', help='输出文件名，需要填写.xls后缀')
 
     # MergeStudentXls(InputFolder: str, OutputFile:str)
     mergestudentxls_parser = subparsers.add_parser('merge-xls', help='如果要合成为一个xlsx文件用于登录，请使用此函数')
 
     mergestudentxls_parser.add_argument('-if', '--input-xls-folder', required=True, help='含有多个.xls文件的文件夹')
 
-    mergestudentxls_parser.add_argument('-o', '--output-xlsx', required=True, help='输出文件名，需要填写.xlsx后缀')
+    mergestudentxls_parser.add_argument('-o', '--output-xlsx', required=False, default='output_xls', help='输出文件名，需要填写.xlsx后缀')
 
     # LoginUseEdu(InputXlsx:str, OutputFile:str)
     loginedu_parser = subparsers.add_parser('login-edu',
@@ -555,7 +557,7 @@ def CreateParser():
 
     loginedu_parser.add_argument('-i', '--input-xlsx', required=True, help='含有账号密码的xlsx表格文件的路径')
 
-    loginedu_parser.add_argument('-o', '--output-txt', required=True, help='输出文件名，需要填写.txt后缀')
+    loginedu_parser.add_argument('-o', '--output-txt', required=False, default='tokens.txt', help='输出文件名，需要填写.txt后缀')
 
     # Version
     getversion_parser = subparsers.add_parser('version', help='获取CET版本')
