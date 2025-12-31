@@ -12,7 +12,7 @@
 4. 作品
 5. EDU
 
-## API (4)
+## API (5)
 
 `*API`
 
@@ -60,6 +60,17 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - Token: 单个Token放入
 
 携带Token，以GET方式调用一个编程猫API
+
+- 返回类型: `requests.Response`
+
+### 使用PUT方式调用API
+
+`PutAPI(Path: str, Token: str)`
+
+- Path: API路径，不包括 **https://api.codemao.cn** 部分
+- Token: 单个Token放入
+
+携带Token，以PUT方式调用一个编程猫API
 
 - 返回类型: `requests.Response`
 
@@ -115,7 +126,7 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - 返回类型: `bool`
 - 返回值: 请求完成后，返回**True**
 
-## 作品 (5)
+## 作品 (6)
 
 `*Work`
 
@@ -179,6 +190,19 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - ReviewText: 评论内容
 
 在一个作品下，批量发送同样的评论
+
+- 返回类型: `bool`
+- 返回值: 请求完成后，返回**True**
+
+### 置顶评论（越权）
+
+`TopReview(Token: str, WorkID: str, CommentID: str)`
+
+- Token: **单个可用Token**
+- WorkID: 作品ID
+- CommentID: 评论ID
+
+依赖漏洞，可在不是创作者的情况下置顶某个评论
 
 - 返回类型: `bool`
 - 返回值: 请求完成后，返回**True**

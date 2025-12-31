@@ -28,7 +28,7 @@ from openpyxl import Workbook
 from openpyxl import load_workbook
 
 coloredlogs.install(level='INFO', fmt='%(asctime)s - %(funcName)s: %(message)s')
-version = "1.1.6_NT"
+version = "1.1.7_NT"
 max_workers = 8
 
 """POST方式调用API"""
@@ -68,6 +68,16 @@ def GetAPI(Path: str, Token: str) -> requests.Response:
                "Connection": "keep-alive", "Content-Type": "application/json", 'User-Agent': UserAgent().random,
                "authorization": Token}
     return requests.get(url=f"https://api.codemao.cn{Path}", headers=headers)
+
+
+"""PUT方式调用API"""
+
+
+def PutAPI(Path: str, Token: str) -> requests.Response:
+    headers = {"Accept": "*/*", "Accept-Encoding": "gzip, deflate, br", "Accept-Language": "zh-CN,zh;q=0.9",
+               "Connection": "keep-alive", "Content-Type": "application/json", 'User-Agent': UserAgent().random,
+               "authorization": Token}
+    return requests.put(url=f"https://api.codemao.cn{Path}", headers=headers)
 
 
 """确定Token数量"""
@@ -314,6 +324,21 @@ def SendReviewToWork(Path: str, WorkID: str, ReviewText: str) -> bool:
             success_count = sum(results)
 
         return True
+    
+
+"""置顶评论（越权）"""
+def TopReview(Token: str, WorkID: str, CommentID: str) -> bool:
+    try:
+        response = PutAPI(f"/creation-tools/v1/works/{WorkID}/comment/{CommentID}/top", Token=Token)
+
+        if response.status_code == 204:
+            return True
+        else:
+            logging.error(f"请求失败，状态码: {response.status_code}, 响应: {response.text[:100]}")
+            return False
+    except Exception as e:
+        logging.error(f"请求异常：{str(e)}")
+        return False
 
 
 """浏览作品"""
@@ -481,6 +506,15 @@ def CreateParser():
 
     sendrevietowork_parser.add_argument('-r', '--review-text', required=True, help='评论内容')
 
+    # TopReview(Token: str, WorkID: str, CommentID: str)
+    topreview_parser = subparsers.add_parser('review-top', help='越权置顶某个评论')
+
+    topreview_parser.add_argument('-t', '--one-token', required=True, help='一个可用Token')
+
+    topreview_parser.add_argument('-wid', '--work-id', required=True, help='作品ID')
+
+    topreview_parser.add_argument('-cid', '--comment-id', required=True, help='评论ID')
+
     # ViewWork(Token: str, WorkID: str)
     viewwork_parser = subparsers.add_parser('view-work',
                                             help='给作品加一个浏览，如果要一直刷，只需要循环这个函数就可以，一个Token就够')
@@ -532,12 +566,16 @@ def CreateParser():
 
 
 if __name__ == '__main__':
-    print('Welcome to CET')
+    logging.info('Welcome to CET')
 
     parser = CreateParser()
     args = parser.parse_args()
 
     # 处理
+    if args.command == None:
+        logging.info('输入 "-h" 获得使用帮助')
+        logging.info('或者浏览文档：https://github.com/Wangs-official/CodemaoEDUTools/blob/main/doc/cli.md')
+
     if args.command == 'check-token':
         logging.info(f'可用Token数量: {CheckToken(args.token_file)}')
 
@@ -572,6 +610,11 @@ if __name__ == '__main__':
     if args.command == 'review-work':
         logging.info('请稍后...')
         if SendReviewToWork(args.token_file, args.work_id, args.review_text):
+            logging.info('执行成功')
+
+    if args.command == 'review-top':
+        logging.info('请稍后...')
+        if TopReview(args.one_token, args.work_id, args.comment_id):
             logging.info('执行成功')
 
     if args.command == 'view-work':

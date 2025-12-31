@@ -7,12 +7,10 @@
 ## 可用指令
 
 ```
-usage: main.py [-h] [-tf TOKEN_FILE] {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,view-work,create-class,create-student,merge-xls,login-edu,version} ...
-
-欢迎使用 CodemaoEDUTools! 当前版本: v1.1.5
+欢迎使用 CodemaoEDUTools! 当前版本: {版本号}
 
 positional arguments:
-  {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,view-work,create-class,create-student,merge-xls,login-edu,version}
+  {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,review-top,view-work,create-class,create-student,merge-xls,login-edu,version}
                         可用命令
     check-token         查看一个Token文件内，有多少个Token（读取行数）
     get-token           登录以获取一个用户的Token
@@ -22,6 +20,7 @@ positional arguments:
     collect-work        批量收藏一个作品
     report-work         批量举报一个作品，请勿大量Token举报
     review-work         在一个作品下，批量发送同样的评论
+    review-top          越权置顶某个评论
     view-work           给作品加一个浏览，如果要一直刷，只需要循环这个函数就可以，一个Token就够
     create-class        在Edu里添加一个新的班级
     create-student      批量把创建新的学生并添加到班级内
@@ -33,7 +32,7 @@ options:
   -h, --help            show this help message and exit
 
 全局参数:
-  -tf, --token-file TOKEN_FILE
+  -tf TOKEN_FILE, --token-file TOKEN_FILE
                         Token文件路径
 
 示例: python3 main.py check-token
@@ -84,9 +83,9 @@ options:
 
 `-tf <Token文件路径> follow-user -uid <训练师id>`
 
-## 作品 (5)
+## 作品 (6)
 
-[功能描述](import.md#作品-5)
+[功能描述](import.md#作品-6)
 
 ### 点赞作品
 
@@ -116,6 +115,10 @@ options:
 ### 评论作品
 
 `-tf <Token文件路径> review-work -wid <作品id> -r <回复内容>`
+
+### 置顶评论（越权）
+
+`review-top -wid <作品ID> -cid <评论ID> -t <一个可用Token>`
 
 ### 浏览作品
 
