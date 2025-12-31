@@ -1,5 +1,6 @@
 .idea
 venv
+doc
 
 .DS_Store
 *.pyc

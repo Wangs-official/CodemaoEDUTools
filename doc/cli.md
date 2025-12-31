@@ -1,18 +1,16 @@
 # 💻 在命令行中使用
 
-如果你想想从命令行使用，请阅读此区域，了解可用的参数
+如果你想从命令行使用，请阅读此区域，了解可用的参数
 
 如果你想把这个程序作为库在你的代码中调用，请阅读[此文档](import.md)
 
 ## 可用指令
 
 ```
-usage: main.py [-h] [-tf TOKEN_FILE] {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,view-work,create-class,create-student,merge-xls,login-edu,version} ...
-
-欢迎使用 CodemaoEDUTools! 当前版本: v1.1.5
+欢迎使用 CodemaoEDUTools! 当前版本: {版本号}
 
 positional arguments:
-  {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,view-work,create-class,create-student,merge-xls,login-edu,version}
+  {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,review-top,view-work,create-class,create-student,merge-xls,login-edu,version}
                         可用命令
     check-token         查看一个Token文件内，有多少个Token（读取行数）
     get-token           登录以获取一个用户的Token
@@ -22,6 +20,7 @@ positional arguments:
     collect-work        批量收藏一个作品
     report-work         批量举报一个作品，请勿大量Token举报
     review-work         在一个作品下，批量发送同样的评论
+    review-top          越权置顶某个评论
     view-work           给作品加一个浏览，如果要一直刷，只需要循环这个函数就可以，一个Token就够
     create-class        在Edu里添加一个新的班级
     create-student      批量把创建新的学生并添加到班级内
@@ -33,7 +32,7 @@ options:
   -h, --help            show this help message and exit
 
 全局参数:
-  -tf, --token-file TOKEN_FILE
+  -tf TOKEN_FILE, --token-file TOKEN_FILE
                         Token文件路径
 
 示例: python3 main.py check-token
@@ -84,9 +83,9 @@ options:
 
 `-tf <Token文件路径> follow-user -uid <训练师id>`
 
-## 作品 (5)
+## 作品 (6)
 
-[功能描述](import.md#作品-5)
+[功能描述](import.md#作品-6)
 
 ### 点赞作品
 
@@ -100,11 +99,12 @@ options:
 
 `-tf <Token文件路径> report-work -wid <作品id> -r <举报原因> -d <举报描述>`
 
-**⚠️ 请额外分出来20~25个Token使用此函数，不要几千个Token一起举报，选择"违法违规"的话20个Token就能让作品进到审核状态**
+> [!IMPORTANT]
+> 默认只取Token文件内前二十个进行请求
 
-> 可用于举报的原因（Reason），与官网一致，直接填入即可
+> [!TIP]
+> 可用于举报的原因（Reason），与官网一致，直接填入即可，推荐使用**违法违规**举报理由
 > 
-> 推荐使用**违法违规**举报理由
 > 1. 违法违规
 > 2. 色情低俗
 > 3. 脏话暴力
@@ -116,6 +116,10 @@ options:
 ### 评论作品
 
 `-tf <Token文件路径> review-work -wid <作品id> -r <回复内容>`
+
+### 置顶评论（越权）
+
+`review-top -wid <作品ID> -cid <评论ID> -t <一个可用Token>`
 
 ### 浏览作品
 
@@ -133,12 +137,22 @@ options:
 
 `create-student -t <Edu Token> -cid <班级ID> -sl <学生名字的列表> -o <*.xls>`
 
+> [!WARNING]
 > 注意！学生列表请使用单引号包裹，否则会导致终端误解析！
+
+> [!TIP]
+> 当不填入 "-sl" 参数值时，程序会使用自带的学生列表
 
 ### 合并生成的表格
 
 `merge-xls -if <含有多个xls文件的文件夹> -o <*.xlsx>`
 
+> [!TIP]
+> 当不填入 "-o" 参数值时，程序会使用 "output.xlsx" 作为文件名
+
 ### 登录Edu账号
 
-`login-edu -i <含有账号密码的xlsx表格文件的路径> -o <*.txt(推荐tokens.txt)>`
+`login-edu -i <含有账号密码的xlsx表格文件的路径> -o <*.txt>`
+
+> [!TIP]
+> 当不填入 "-o" 参数值时，程序会使用 "tokens.txt" 作为文件名

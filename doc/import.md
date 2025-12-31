@@ -12,7 +12,7 @@
 4. 作品
 5. EDU
 
-## API (4)
+## API (5)
 
 `*API`
 
@@ -60,6 +60,17 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - Token: 单个Token放入
 
 携带Token，以GET方式调用一个编程猫API
+
+- 返回类型: `requests.Response`
+
+### 使用PUT方式调用API
+
+`PutAPI(Path: str, Token: str)`
+
+- Path: API路径，不包括 **https://api.codemao.cn** 部分
+- Token: 单个Token放入
+
+携带Token，以PUT方式调用一个编程猫API
 
 - 返回类型: `requests.Response`
 
@@ -115,7 +126,7 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - 返回类型: `bool`
 - 返回值: 请求完成后，返回**True**
 
-## 作品 (5)
+## 作品 (6)
 
 `*Work`
 
@@ -154,11 +165,12 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 
 批量举报一个作品
 
-**⚠️ 请额外分出来20~25个Token使用此函数，不要几千个Token一起举报，选择"违法违规"的话20个Token就能让作品进到审核状态**
+> [!IMPORTANT]
+> 默认只取Token文件内前二十个进行请求
 
-> 可用于举报的原因（Reason），与官网一致，直接填入即可
+> [!TIP]
+> 可用于举报的原因（Reason），与官网一致，直接填入即可，推荐使用**违法违规**举报理由
 > 
-> 推荐使用**违法违规**举报理由
 > 1. 违法违规
 > 2. 色情低俗
 > 3. 脏话暴力
@@ -179,6 +191,19 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - ReviewText: 评论内容
 
 在一个作品下，批量发送同样的评论
+
+- 返回类型: `bool`
+- 返回值: 请求完成后，返回**True**
+
+### 置顶评论（越权）
+
+`TopReview(Token: str, WorkID: str, CommentID: str)`
+
+- Token: **单个可用Token**
+- WorkID: 作品ID
+- CommentID: 评论ID
+
+依赖漏洞，可在不是创作者的情况下置顶某个评论
 
 - 返回类型: `bool`
 - 返回值: 请求完成后，返回**True**
