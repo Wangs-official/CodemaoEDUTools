@@ -12,7 +12,7 @@
 4. 作品
 5. EDU
 
-## API (5)
+## API (6)
 
 `*API`
 
@@ -63,6 +63,16 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 
 - 返回类型: `requests.Response`
 
+### 使用GET方式匿名调用API
+
+`GetWithoutTokenAPI(Path:str)`
+
+- Path: API路径，不包括 **https://api.codemao.cn** 部分
+
+不携带Token，以GET方式调用一个编程猫API
+
+- 返回类型: `requests.Response`
+
 ### 使用PUT方式调用API
 
 `PutAPI(Path: str, Token: str)`
@@ -99,7 +109,7 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - 返回类型: `str | bool`
 - 返回值: 可用于请求的Token，请求失败时，返回False
 
-## 用户 (2)
+## 用户 (3)
 
 `*User`
 
@@ -125,6 +135,17 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 
 - 返回类型: `bool`
 - 返回值: 请求完成后，返回**True**
+
+### 获取用户所有的作品
+
+`GetUserWork(UserID: str)`
+
+- UserID: 训练师编号
+
+获取一个用户的所有作品ID
+
+- 返回类型: `str | bool`
+- 返回值: 以 {作品ID}<空格>{作品ID} 格式返回，请求失败时，返回False
 
 ## 作品 (6)
 

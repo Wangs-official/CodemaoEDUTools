@@ -74,6 +74,15 @@ def GetAPI(Path: str, Token: str) -> requests.Response:
     return requests.get(url=f"https://api.codemao.cn{Path}", headers=headers)
 
 
+"""GET方式匿名调用API"""
+
+
+def GetWithoutTokenAPI(Path: str) -> requests.Response:
+    headers = {"Accept": "*/*", "Accept-Encoding": "gzip, deflate, br", "Accept-Language": "zh-CN,zh;q=0.9",
+               "Connection": "keep-alive", "Content-Type": "application/json", "User-Agent": UserAgent().random, }
+    return requests.get(url=f"https://api.codemao.cn{Path}", headers=headers)
+
+
 """PUT方式调用API"""
 
 
@@ -179,6 +188,20 @@ def FollowUser(Path: str, UserID: str) -> bool:
             sum(results)
 
         return True
+
+
+"""获取用户所有的作品"""
+
+
+def GetUserWork(UserID: str) -> str | bool:
+    response = GetWithoutTokenAPI(
+        f"/creation-tools/v2/user/center/work-list?type=newest&user_id={UserID}&offset=0&limit=1000")
+    if response.status_code == 200:
+        ids = [str(item["id"]) for item in json.loads(response.text)["items"]]
+        return " ".join(ids)
+    else:
+        logging.error(f"请求失败，状态码: {response.status_code}, 响应: {response.text[:100]}")
+        return False
 
 
 """点赞作品"""
@@ -495,6 +518,11 @@ def CreateParser():
 
     followuser_parser.add_argument("-uid", "--user-id", required=True, nargs='+', help="训练师编号")
 
+    # GetUserWork(UserID: str)
+    getuserwork_parser = subparsers.add_parser("get-work", help="获取用户所有作品ID")
+
+    getuserwork_parser.add_argument("-uid", "--user-id", required=True, nargs='+', help="训练师编号")
+
     # LikeWork(Path: str, WorkID: str)
     likework_parser = subparsers.add_parser("like-work", help="批量点赞一个作品")
 
@@ -613,6 +641,15 @@ if __name__ == "__main__":
             logging.info(f"请稍后，正在执行：{i}")
             if FollowUser(args.token_file, i):
                 logging.info("执行成功")
+
+    if args.command == "get-work":
+        for i in args.user_id:
+            logging.info(f"请稍后，正在执行：{i}")
+            if not GetUserWork(i):
+                pass
+            else:
+                logging.info(f"用户：{i} 的作品列表：")
+                logging.info(GetUserWork(i))
 
     if args.command == "like-work":
         for i in args.work_id:
