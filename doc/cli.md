@@ -4,18 +4,24 @@
 
 如果你想把这个程序作为库在你的代码中调用，请阅读[此文档](import.md)
 
+> [!TIP]
+> 重要更新！自 1.2.0 后，你可以在部分参数中输入用列表包裹的多个ID，最大化的节省时间。支持这一特性的参数值已经提前标明
+>
+> 例如：``python3 main.py follow-user -uid 114514 1919810`
+
 ## 可用指令
 
 ```
-欢迎使用 CodemaoEDUTools! 当前版本: {版本号}
+欢迎使用 CodemaoEDUTools! 当前版本: v1.2.0
 
 positional arguments:
-  {check-token,get-token,signature,follow-user,like-work,collect-work,report-work,review-work,review-top,view-work,create-class,create-student,merge-xls,login-edu,version}
+  {check-token,get-token,signature,follow-user,get-work,like-work,collect-work,report-work,review-work,review-top,view-work,create-class,create-student,merge-xls,login-edu,version}
                         可用命令
     check-token         查看一个Token文件内，有多少个Token（读取行数）
     get-token           登录以获取一个用户的Token
     signature           签订友好协议，推荐在使用其他功能前统一签订一次友好协议，防止出现无法请求的情况
     follow-user         批量关注一个用户，高情商就是刷粉丝
+    get-work            获取用户所有作品ID
     like-work           批量点赞一个作品
     collect-work        批量收藏一个作品
     report-work         批量举报一个作品，请勿大量Token举报
@@ -36,7 +42,6 @@ options:
                         Token文件路径
 
 示例: python3 main.py check-token
-
 ```
 
 ## 全局参数
@@ -71,7 +76,7 @@ options:
 
 `get-token -u <用户名/手机号> -p <密码>`
 
-## 用户 (2)
+## 用户 (3)
 
 [功能描述](import.md#用户-2)
 
@@ -83,6 +88,16 @@ options:
 
 `-tf <Token文件路径> follow-user -uid <训练师id>`
 
+支持输入多个训练师ID，使用空格分隔每个ID
+
+### 获取用户所有的作品
+
+`-uid <训练师id>`
+
+支持输入多个训练师ID，使用空格分隔每个ID
+
+返回格式：{作品ID}<空格>{作品ID}
+
 ## 作品 (6)
 
 [功能描述](import.md#作品-6)
@@ -91,16 +106,22 @@ options:
 
 `-tf <Token文件路径> like-work -wid <作品id>`
 
+支持输入多个作品ID，使用空格分隔每个ID
+
 ### 收藏作品
 
 `-tf <Token文件路径> collect-work -wid <作品id>`
+
+支持输入多个作品ID，使用空格分隔每个ID
 
 ### 举报作品
 
 `-tf <Token文件路径> report-work -wid <作品id> -r <举报原因> -d <举报描述>`
 
+支持输入多个作品ID，使用空格分隔每个ID
+
 > [!IMPORTANT]
-> 默认只取Token文件内前二十个进行请求
+> 默认只取Token文件内前二十个进行请求，可在程序中修改变量 `report_readtoken_line`
 
 > [!TIP]
 > 可用于举报的原因（Reason），与官网一致，直接填入即可，推荐使用**违法违规**举报理由
@@ -116,6 +137,10 @@ options:
 ### 评论作品
 
 `-tf <Token文件路径> review-work -wid <作品id> -r <回复内容>`
+
+支持输入多个作品ID，使用空格分隔每个ID
+
+支持输入多个回复内容，使用空格分隔每个回复内容。输入多个回复内容后，每个账号将会同时评论这些内容
 
 ### 置顶评论（越权）
 
@@ -152,7 +177,9 @@ options:
 
 ### 登录Edu账号
 
-`login-edu -i <含有账号密码的xlsx表格文件的路径> -o <*.txt>`
+`login-edu -i <含有账号密码的xlsx表格文件的路径> -o <*.txt> -s <是否同时签署友好协议{True/False}>`
 
 > [!TIP]
 > 当不填入 "-o" 参数值时，程序会使用 "tokens.txt" 作为文件名
+> 
+> 当不填入 "-s" 参数值时，登录时不会同时签署友好协议
