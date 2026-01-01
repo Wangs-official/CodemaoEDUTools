@@ -166,7 +166,7 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 批量举报一个作品
 
 > [!IMPORTANT]
-> 默认只取Token文件内前二十个进行请求
+> 默认只取Token文件内前二十个进行请求，可在程序中修改变量 `report_readtoken_line`
 
 > [!TIP]
 > 可用于举报的原因（Reason），与官网一致，直接填入即可，推荐使用**违法违规**举报理由
