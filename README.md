@@ -1,10 +1,20 @@
-# 🐱CodemaoEduTool 🔧
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="doc/banner/Banner-Dark.png">
+<img src="doc/banner/Banner-Light.png">
+</picture>
 
-编程猫社区学生账号神秘小工具，且用且珍惜
+![](https://img.shields.io/badge/Python-3776AB?style=flat&logo=Python&logoColor=ffffff)
+![](https://img.shields.io/github/license/Wangs-official/CodemaoEDUTools.svg)
+![](https://img.shields.io/github/stars/Wangs-official/CodemaoEDUTools.svg?style=social&label=Star&maxAge=2592000)
+![https://shequ.codemao.cn/user/1458227103](https://img.shields.io/badge/关注WangZixu的编程猫-white)
+
+为编程猫社区的”老师“们提供更便捷的API调用方案，且用且珍惜
 
 这个程序不仅可以在CLI（命令行）环境中使用，还可以作为一个库被调用
 
 本人编程猫：https://shequ.codemao.cn/user/1458227103
+
+注：README看板娘由 **Nano Banna Pro** 模型生成
 
 > [!TIP]
 > 重要更新！自 1.2.0 后，你可以在部分参数中输入用列表包裹的多个ID，最大化的节省时间。支持这一特性的参数值已经提前标明
