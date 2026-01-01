@@ -273,10 +273,11 @@ with open("test.xls", wb) as f:
 
 ### 登录Edu账号
 
-`LoginUseEdu(InputXlsx:str, OutputFile:str)`
+`def LoginUseEdu(InputXlsx: str, OutputFile: str, Signature: bool)`
 
 - InputXlsx: 含有账号密码的xlsx表格文件的路径，文件格式请参考README中的 **📃 文件格式**
 - OutputFileName: 输出文件名，需要填写 **.txt** 后缀
+- Signature：是否在登录的同时签署友好协议，[1.2.0 新功能](update.md#version-120-20260101)
 
 批量登录所有在xlsx内保存的账号密码，并打印Token到指定的文件内
 

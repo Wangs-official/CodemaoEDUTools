@@ -169,7 +169,9 @@ options:
 
 ### 登录Edu账号
 
-`login-edu -i <含有账号密码的xlsx表格文件的路径> -o <*.txt>`
+`login-edu -i <含有账号密码的xlsx表格文件的路径> -o <*.txt> -s <是否同时签署友好协议{True/False}>`
 
 > [!TIP]
 > 当不填入 "-o" 参数值时，程序会使用 "tokens.txt" 作为文件名
+> 
+> 当不填入 "-s" 参数值时，登录时不会同时签署友好协议

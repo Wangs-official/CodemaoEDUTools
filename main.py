@@ -430,8 +430,10 @@ def MergeStudentXls(InputFolder: str, OutputFile: str) -> bool:
 """登录Edu账号"""
 
 
-def LoginUseEdu(InputXlsx: str, OutputFile: str) -> bool:
+def LoginUseEdu(InputXlsx: str, OutputFile: str, Signature: bool) -> bool:
     CannotLogin = 0
+    if Signature:
+        logging.info("已开启同时签署用户协议功能！")
     if os.path.exists(InputXlsx):
         Sheet = load_workbook(InputXlsx).active
         AllAccount = Sheet.max_row
@@ -447,6 +449,11 @@ def LoginUseEdu(InputXlsx: str, OutputFile: str) -> bool:
             if not LoginReponse:
                 CannotLogin += 1
             else:
+                if Signature:
+                    response = PostAPI(Path="/nemo/v3/user/level/signature", PostData={}, Token=LoginReponse)
+
+                    if response.status_code != 200:
+                        logging.error(f"签署友好协议失败，状态码: {response.status_code}, 响应: {response.text[:100]}")
                 with open(OutputFile, "a") as f:
                     f.write(LoginReponse + "\n")
         logging.warning(f"未成功登录数量: {CannotLogin}，占比{(CannotLogin / AllAccount) * 100}%")
@@ -566,6 +573,8 @@ def CreateParser():
 
     loginedu_parser.add_argument("-i", "--input-xlsx", required=True, help="含有账号密码的xlsx表格文件的路径")
 
+    loginedu_parser.add_argument("-s", "--signature-user", required=False, default=False, help="是否同时签署友好协议")
+
     loginedu_parser.add_argument("-o", "--output-txt", required=False, default="tokens.txt",
                                  help="输出文件名，需要填写.txt后缀", )
 
@@ -663,7 +672,7 @@ if __name__ == "__main__":
 
     if args.command == "login-edu":
         logging.info("请稍后...")
-        if LoginUseEdu(args.input_xlsx, args.output_txt):
+        if LoginUseEdu(args.input_xlsx, args.output_txt, args.signature_user):
             logging.info(f"执行成功，已将登录的Token保存到：{args.output_txt}")
 
     if args.command == "version":
