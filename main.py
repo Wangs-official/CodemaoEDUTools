@@ -116,7 +116,7 @@ def GetUserToken(Username: str, Password: str) -> str | bool:
     if response.status_code == 200:
         return str(json.loads(response.text).get("auth", {}).get("token"))
     else:
-        logging.error(f"请求失败，状态码: {response.status_code}, 响应: {response.text[:100]}")
+        logging.error(f"请求失败，用户名：{Username}, 状态码: {response.status_code}, 响应: {response.text[:100]}")
         return False
 
 
@@ -427,20 +427,15 @@ def CreateStudentOnEdu(Token: str, ClassID: str, StudentNameList: list[str]) -> 
 def MergeStudentXls(InputFolder: str, OutputFile: str) -> bool:
     try:
         if os.path.exists(InputFolder):
-            with open(OutputFile, "w") as f:
-                f.close()
             main_wb = Workbook()
             main_ws = main_wb.active
-            row_count = 1
             for filename in os.listdir(InputFolder):
                 if filename.endswith(".xls"):
                     file_path = os.path.join(InputFolder, filename)
-                    df = pd.read_excel(file_path, skiprows=3)
+                    df = pd.read_excel(file_path, skiprows=3, dtype=str)
                     for index, row in df.iterrows():
                         main_ws.append(row.tolist())
-                        row_count += 1
-            output_file = OutputFile
-            main_wb.save(output_file)
+            main_wb.save(OutputFile)
             return True
         else:
             logging.error(f"找不到输入的文件夹: {InputFolder}")
