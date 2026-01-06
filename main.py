@@ -30,10 +30,11 @@ from openpyxl import load_workbook
 
 coloredlogs.install(level="INFO", fmt="%(asctime)s - %(funcName)s: %(message)s")
 
-version = "1.2.0"
+version = "1.2.1"
 max_workers = 8
 student_names = '["xvbnmklq","asdfghjk","qwertyui","zxcvbnml","poiuytre","lkjhgfds","mnbvcxza","plokmijn","uhbygvtd","crfvtgby","edcrfvtg","qazwsxed","rfvtgbyh","nujmikol","zxasqwde","plmnkoij","bvcdxsza","qwermnbp","asxcvgfr","lpoikmju","yhnujmik","tgbzdxew","rfvgyhuj","edcwsxqa","zaqxswcd","vfrcdews","bgtnhyuj","mkiopluj","nhybtgvr","cdexswza","qwerfdsa","zxcvfdsa","poiuytrw","lkjhgfda","mnbvcxzs","asdfqwer","zxcvqwer","poiulkjh","mnbvcxas","qwertzui","yxcvbnmq","plokmnji","uhbgyvft","crfvtgyn","edcrfvbg","qazwsxrf","rfvtgbyu","nujmiklp","zxasqwed","plmnkoji","bvcdxsaz","qwermnbo","asxcvfgd","lpoikmjn","yhnujmki","tgbzdxec","rfvgyhuk","edcwsxqz","zaqxswce","vfrcdewa","bgtnhyum","mkioplun","nhybtgvf","cdexswzb","qwerfdsz","zxcvfdsz","poiuytrq","lkjhgfdz","mnbvcxzc","asdfqwez","zxcvqwez","poiulkjm","mnbvcxaq","qwertzuy","yxcvbnmr","plokmnjh","uhbgyvfr","crfvtgyb","edcrfvbn","qazwsxre","rfvtgbyi","nujmiklj","zxasqweg","plmnkojh","bvcdxsay","qwermnbu","asxcvfgh","lpoikmjh","yhnujmko","tgbzdxer","rfvgyhun","edcwsxqv","zaqxswec","vfrcdewq","bgtnhyup","mkiopluh","nhybtgvc","cdexswzg","qwerfdsx","zxcvfdsx"]'
 report_readtoken_line = 20
+
 
 """POST方式调用API"""
 
@@ -615,7 +616,7 @@ if __name__ == "__main__":
     parser = CreateParser()
     args = parser.parse_args()
 
-    # 处理
+    # 主程序
     if args.command is None:
         logging.info('输入 "-h" 获得使用帮助')
         logging.info("或者浏览文档：https://github.com/Wangs-official/CodemaoEDUTools/blob/main/doc/cli.md")
