@@ -17,7 +17,7 @@
 注：README看板娘由 **Nano Banna Pro** 模型生成
 
 > [!TIP]
-> 重要更新！自 1.2.0 后，你可以在部分参数中输入用列表包裹的多个ID，最大化的节省时间。支持这一特性的参数值已经提前标明
+> 重要更新！自 1.2.0 后，你可以在部分参数中输入用空格分开的多个ID，最大化的节省时间。支持这一特性的参数值已经提前标明
 >
 > 例如：`python3 main.py follow-user -uid 114514 1919810`
 
@@ -42,6 +42,7 @@ pandas
 
 - 🌏 如果你想把这个程序作为库在你的代码中调用，请点击[这里](doc/import.md)
 - 💻 如果你想从命令行使用，请点击[这里](doc/cli.md)
+- 🔧 想对这个项目进行贡献？请点击[这里](doc/code.md)
 
 需要批量调用的部分使用了多线程，速度会更快
 
@@ -61,7 +62,7 @@ pandas
 
 `LoginUseEdu()` 函数所需
 
-由函数`MergeStudentXls()`生成的表格可直接使用 (-em)
+由函数`MergeStudentXls()`生成的表格可直接使用
 
 也就是没有标题，不要带标题就行，直接就 **账号名-账号-密码**
 
@@ -100,3 +101,9 @@ pandas
 
 - CodemaoCommunityHistory/CodemaoEduAutoReg
 - CodemaoCommunityHistory/CodemaoPL
+
+## ❤️
+
+> 結ばれた絆に 裏切ることない愛情 を
+> 
+> 为相连的牵绊 带来了永不背叛的爱情

@@ -5,17 +5,17 @@
 如果你想把这个程序作为库在你的代码中调用，请阅读[此文档](import.md)
 
 > [!TIP]
-> 重要更新！自 1.2.0 后，你可以在部分参数中输入用列表包裹的多个ID，最大化的节省时间。支持这一特性的参数值已经提前标明
+> 重要更新！自 1.2.0 后，你可以在部分参数中输入用空格分开的多个ID，最大化的节省时间。支持这一特性的参数值已经提前标明
 >
-> 例如：``python3 main.py follow-user -uid 114514 1919810`
+> 例如：`python3 main.py follow-user -uid 114514 1919810`
 
 ## 可用指令
 
 ```
-欢迎使用 CodemaoEDUTools! 当前版本: v1.2.0
+欢迎使用 CodemaoEDUTools! 当前版本: v1.2.3
 
 positional arguments:
-  {check-token,get-token,signature,follow-user,get-work,like-work,collect-work,report-work,review-work,review-top,view-work,create-class,create-student,merge-xls,login-edu,version}
+  {check-token,get-token,signature,follow-user,get-work,like-work,collect-work,report-work,review-work,review-top,view-work,fork-work,create-class,create-student,merge-xls,login-edu,version}
                         可用命令
     check-token         查看一个Token文件内，有多少个Token（读取行数）
     get-token           登录以获取一个用户的Token
@@ -28,6 +28,7 @@ positional arguments:
     review-work         在一个作品下，批量发送同样的评论
     review-top          越权置顶某个评论
     view-work           给作品加一个浏览，如果要一直刷，只需要循环这个函数就可以，一个Token就够
+    fork-work           再创作一个作品
     create-class        在Edu里添加一个新的班级
     create-student      批量把创建新的学生并添加到班级内
     merge-xls           如果要合成为一个xlsx文件用于登录，请使用此函数
@@ -86,37 +87,37 @@ options:
 
 ### 关注用户
 
-`-tf <Token文件路径> follow-user -uid <训练师id>`
+`-tf <Token文件路径> follow-user -uid <训练师编号>`
 
-支持输入多个训练师ID，使用空格分隔每个ID
+支持输入多个训练师编号，使用空格分隔每个ID
 
 ### 获取用户所有的作品
 
-`-uid <训练师id>`
+`-uid <训练师编号>`
 
-支持输入多个训练师ID，使用空格分隔每个ID
+支持输入多个训练师编号，使用空格分隔每个ID
 
 返回格式：{作品ID}<空格>{作品ID}
 
-## 作品 (6)
+## 作品 (7)
 
 [功能描述](import.md#作品-6)
 
 ### 点赞作品
 
-`-tf <Token文件路径> like-work -wid <作品id>`
+`-tf <Token文件路径> like-work -wid <作品ID>`
 
 支持输入多个作品ID，使用空格分隔每个ID
 
 ### 收藏作品
 
-`-tf <Token文件路径> collect-work -wid <作品id>`
+`-tf <Token文件路径> collect-work -wid <作品ID>`
 
 支持输入多个作品ID，使用空格分隔每个ID
 
 ### 举报作品
 
-`-tf <Token文件路径> report-work -wid <作品id> -r <举报原因> -d <举报描述>`
+`-tf <Token文件路径> report-work -wid <作品ID> -r <举报原因> -d <举报描述>`
 
 支持输入多个作品ID，使用空格分隔每个ID
 
@@ -136,7 +137,7 @@ options:
 
 ### 评论作品
 
-`-tf <Token文件路径> review-work -wid <作品id> -r <回复内容>`
+`-tf <Token文件路径> review-work -wid <作品ID> -r <回复内容>`
 
 支持输入多个作品ID，使用空格分隔每个ID
 
@@ -148,7 +149,13 @@ options:
 
 ### 浏览作品
 
-`view-work -wid <作品id> -t <一个可用Token>`
+`view-work -wid <作品ID> -t <一个可用Token>`
+
+### 再创作作品
+
+`-tf <Token文件路径> fork-work -wid <作品ID>`
+
+支持输入多个作品ID，使用空格分隔每个ID
 
 ## EDU (4)
 

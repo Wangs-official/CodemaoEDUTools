@@ -147,7 +147,7 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 - 返回类型: `str | bool`
 - 返回值: 以 {作品ID}<空格>{作品ID} 格式返回，请求失败时，返回False
 
-## 作品 (6)
+## 作品 (7)
 
 `*Work`
 
@@ -239,6 +239,18 @@ Header 已准备好，使用`UserAgent().random`随机生成UA
 给作品加一个浏览，如果要一直刷，只需要循环这个函数就可以，一个Token就够
 
 - 返回类型: `bool`
+- 返回值: 请求完成后，返回**True**
+
+### 再创作作品
+
+`ForkWork(Path: str, WorkID: str) -> bool:`
+
+- Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
+- WorkID: 作品ID
+
+再创作一个作品
+
+- 返回类型：`bool`
 - 返回值: 请求完成后，返回**True**
 
 ## EDU (4)
