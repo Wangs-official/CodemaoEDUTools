@@ -86,37 +86,37 @@ options:
 
 ### 关注用户
 
-`-tf <Token文件路径> follow-user -uid <训练师id>`
+`-tf <Token文件路径> follow-user -uid <训练师编号>`
 
-支持输入多个训练师ID，使用空格分隔每个ID
+支持输入多个训练师编号，使用空格分隔每个ID
 
 ### 获取用户所有的作品
 
-`-uid <训练师id>`
+`-uid <训练师编号>`
 
-支持输入多个训练师ID，使用空格分隔每个ID
+支持输入多个训练师编号，使用空格分隔每个ID
 
 返回格式：{作品ID}<空格>{作品ID}
 
-## 作品 (6)
+## 作品 (7)
 
 [功能描述](import.md#作品-6)
 
 ### 点赞作品
 
-`-tf <Token文件路径> like-work -wid <作品id>`
+`-tf <Token文件路径> like-work -wid <作品ID>`
 
 支持输入多个作品ID，使用空格分隔每个ID
 
 ### 收藏作品
 
-`-tf <Token文件路径> collect-work -wid <作品id>`
+`-tf <Token文件路径> collect-work -wid <作品ID>`
 
 支持输入多个作品ID，使用空格分隔每个ID
 
 ### 举报作品
 
-`-tf <Token文件路径> report-work -wid <作品id> -r <举报原因> -d <举报描述>`
+`-tf <Token文件路径> report-work -wid <作品ID> -r <举报原因> -d <举报描述>`
 
 支持输入多个作品ID，使用空格分隔每个ID
 
@@ -136,7 +136,7 @@ options:
 
 ### 评论作品
 
-`-tf <Token文件路径> review-work -wid <作品id> -r <回复内容>`
+`-tf <Token文件路径> review-work -wid <作品ID> -r <回复内容>`
 
 支持输入多个作品ID，使用空格分隔每个ID
 
@@ -148,7 +148,13 @@ options:
 
 ### 浏览作品
 
-`view-work -wid <作品id> -t <一个可用Token>`
+`view-work -wid <作品ID> -t <一个可用Token>`
+
+### 再创作作品
+
+`-tf <Token文件路径> fork-work -wid <作品ID>`
+
+支持输入多个作品ID，使用空格分隔每个ID
 
 ## EDU (4)
 
