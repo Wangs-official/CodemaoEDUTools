@@ -1,0 +1,151 @@
+name: Release on PR Merge
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          tags: true
+
+      # ------------------------------
+      # 校验 PR 是否修改了 __version__
+      # ------------------------------
+      - name: Ensure __version__ is updated
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }}
+
+          DIFF=$(git diff origin/${{ github.event.pull_request.base.ref }}...HEAD CodemaoEDUTools/__init__.py)
+
+          if [ -z "$DIFF" ]; then
+            echo "❌ PR 未修改 CodemaoEDUTools/__init__.py"
+            exit 1
+          fi
+
+          echo "$DIFF" | grep -E '^[+-].*__version__' > /dev/null
+          if [ $? -ne 0 ]; then
+            echo "❌ PR 修改了 __init__.py，但没有修改 __version__"
+            exit 1
+          fi
+
+          echo "✅ 检测到 __version__ 已更新"
+
+      # ------------------------------
+      # 读取版本号
+      # ------------------------------
+      - name: Read version from __init__.py
+        id: version
+        run: |
+          python - << 'EOF'
+          import re
+          from pathlib import Path
+
+          content = Path("CodemaoEDUTools/__init__.py").read_text(encoding="utf-8")
+          match = re.search(r"__version__\s*=\s*['\"]([^'\"]+)['\"]", content)
+
+          if not match:
+              raise RuntimeError("Cannot find __version__")
+
+          print(match.group(1))
+          EOF
+          echo "version=$(python - << 'EOF'
+          import re
+          from pathlib import Path
+          print(re.search(
+              r\"__version__\\s*=\\s*['\\\"]([^'\\\"]+)['\\\"]\",
+              Path(\"CodemaoEDUTools/__init__.py\").read_text(encoding=\"utf-8\")
+          ).group(1))
+          EOF
+          )" >> $GITHUB_OUTPUT
+
+      # ------------------------------
+      # 获取上一个 tag
+      # ------------------------------
+      - name: Get previous tag
+        id: prev_tag
+        run: |
+          git fetch --tags
+          PREV_TAG=$(git tag --sort=-creatordate | head -n 1)
+          echo "prev_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+
+      # ------------------------------
+      # 自动生成 changelog（commit diff）
+      # ------------------------------
+      - name: Generate commit diff changelog
+        id: changelog
+        run: |
+          if [ -z "${{ steps.prev_tag.outputs.prev_tag }}" ]; then
+            echo "changelog=首次发布" >> $GITHUB_OUTPUT
+          else
+            LOG=$(git log ${{ steps.prev_tag.outputs.prev_tag }}..HEAD --oneline)
+            LOG="${LOG//$'\n'/%0A}"
+            echo "changelog=$LOG" >> $GITHUB_OUTPUT
+          fi
+
+      # ------------------------------
+      # 准备发布目录（清理无关文件）
+      # ------------------------------
+      - name: Prepare release directory
+        run: |
+          mkdir release
+          rsync -av \
+            --exclude '.git' \
+            --exclude 'doc' \
+            --exclude '.gitignore' \
+            --exclude 'requirements.txt' \
+            --exclude 'README.md' \
+            ./ release/
+
+      # ------------------------------
+      # 打包
+      # ------------------------------
+      - name: Create zip package
+        run: |
+          cd release
+          zip -r ../cet-${{ steps.version.outputs.version }}.zip .
+
+      - name: Create tar.gz package
+        run: |
+          cd release
+          tar -czf ../cet-${{ steps.version.outputs.version }}.tar.gz .
+
+      # ------------------------------
+      # 创建 GitHub Release
+      # ------------------------------
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Version ${{ steps.version.outputs.version }}
+          body: |
+            ## 说明
+
+            此发行版对应仓库版本${{ steps.version.outputs.version }}，精简体积，可直接作为库使用，也可以在CLI使用
+
+            ## 如果作为库使用
+
+            请直接将`CodemaoEDUTools`文件夹放置在项目的根目录，然后使用代码导入即可
+
+            ## 更新日志（Clean）
+
+            ${{ github.event.pull_request.body }}
+
+            ## 更新日志（Commit Diff）
+
+            ${{ steps.changelog.outputs.changelog }}
+          files: |
+            cet-${{ steps.version.outputs.version }}.zip
+            cet-${{ steps.version.outputs.version }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
