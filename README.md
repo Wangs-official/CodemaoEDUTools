@@ -62,7 +62,7 @@ pandas
 
 `LoginUseEdu()` 函数所需
 
-由函数`MergeStudentXls()`生成的表格可直接使用 (-em)
+由函数`MergeStudentXls()`生成的表格可直接使用
 
 也就是没有标题，不要带标题就行，直接就 **账号名-账号-密码**
 
@@ -101,3 +101,9 @@ pandas
 
 - CodemaoCommunityHistory/CodemaoEduAutoReg
 - CodemaoCommunityHistory/CodemaoPL
+
+## ❤️
+
+> 結ばれた絆に 裏切ることない愛情 を
+> 
+> 为相连的牵绊 带来了永不背叛的爱情

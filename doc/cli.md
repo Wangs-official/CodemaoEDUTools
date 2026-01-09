@@ -12,10 +12,10 @@
 ## 可用指令
 
 ```
-欢迎使用 CodemaoEDUTools! 当前版本: v1.2.0
+欢迎使用 CodemaoEDUTools! 当前版本: v1.2.3
 
 positional arguments:
-  {check-token,get-token,signature,follow-user,get-work,like-work,collect-work,report-work,review-work,review-top,view-work,create-class,create-student,merge-xls,login-edu,version}
+  {check-token,get-token,signature,follow-user,get-work,like-work,collect-work,report-work,review-work,review-top,view-work,fork-work,create-class,create-student,merge-xls,login-edu,version}
                         可用命令
     check-token         查看一个Token文件内，有多少个Token（读取行数）
     get-token           登录以获取一个用户的Token
@@ -28,6 +28,7 @@ positional arguments:
     review-work         在一个作品下，批量发送同样的评论
     review-top          越权置顶某个评论
     view-work           给作品加一个浏览，如果要一直刷，只需要循环这个函数就可以，一个Token就够
+    fork-work           再创作一个作品
     create-class        在Edu里添加一个新的班级
     create-student      批量把创建新的学生并添加到班级内
     merge-xls           如果要合成为一个xlsx文件用于登录，请使用此函数
