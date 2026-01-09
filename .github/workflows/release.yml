@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ------------------------------
+      # 拉取代码
+      # ------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -26,7 +29,7 @@ jobs:
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
 
-          DIFF=$(git diff origin/${{ github.event.pull_request.base.ref }}...HEAD CodemaoEDUTools/__init__.py)
+          DIFF=$(git diff origin/${{ github.event.pull_request.base.ref }}...HEAD -- CodemaoEDUTools/__init__.py)
 
           if [ -z "$DIFF" ]; then
             echo "❌ PR 未修改 CodemaoEDUTools/__init__.py"
@@ -47,27 +50,18 @@ jobs:
       - name: Read version from __init__.py
         id: version
         run: |
-          python - << 'EOF'
+          VERSION=$(python - << 'EOF'
           import re
           from pathlib import Path
 
           content = Path("CodemaoEDUTools/__init__.py").read_text(encoding="utf-8")
           match = re.search(r"__version__\s*=\s*['\"]([^'\"]+)['\"]", content)
-
           if not match:
               raise RuntimeError("Cannot find __version__")
-
           print(match.group(1))
           EOF
-          echo "version=$(python - << 'EOF'
-          import re
-          from pathlib import Path
-          print(re.search(
-              r\"__version__\\s*=\\s*['\\\"]([^'\\\"]+)['\\\"]\",
-              Path(\"CodemaoEDUTools/__init__.py\").read_text(encoding=\"utf-8\")
-          ).group(1))
-          EOF
-          )" >> $GITHUB_OUTPUT
+          )
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       # ------------------------------
       # 获取上一个 tag
@@ -86,12 +80,13 @@ jobs:
         id: changelog
         run: |
           if [ -z "${{ steps.prev_tag.outputs.prev_tag }}" ]; then
-            echo "changelog=首次发布" >> $GITHUB_OUTPUT
+            CHANGELOG="首次发布"
           else
-            LOG=$(git log ${{ steps.prev_tag.outputs.prev_tag }}..HEAD --oneline)
-            LOG="${LOG//$'\n'/%0A}"
-            echo "changelog=$LOG" >> $GITHUB_OUTPUT
+            CHANGELOG=$(git log ${{ steps.prev_tag.outputs.prev_tag }}..HEAD --oneline)
           fi
+
+          CHANGELOG="${CHANGELOG//$'\n'/%0A}"
+          echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
 
       # ------------------------------
       # 准备发布目录（清理无关文件）
@@ -108,13 +103,16 @@ jobs:
             ./ release/
 
       # ------------------------------
-      # 打包
+      # 打包 zip
       # ------------------------------
       - name: Create zip package
         run: |
           cd release
           zip -r ../cet-${{ steps.version.outputs.version }}.zip .
 
+      # ------------------------------
+      # 打包 tar.gz
+      # ------------------------------
       - name: Create tar.gz package
         run: |
           cd release
@@ -137,7 +135,7 @@ jobs:
 
             请直接将`CodemaoEDUTools`文件夹放置在项目的根目录，然后使用代码导入即可
 
-            ## 更新日志（Clean）
+            ## 更新日志（PR）
 
             ${{ github.event.pull_request.body }}
 
