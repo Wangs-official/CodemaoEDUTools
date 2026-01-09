@@ -1,4 +1,4 @@
-name: Release on Main Push
+name: Release on main
 
 on:
   push:
@@ -9,9 +9,12 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    env:
+      PACKAGE_DIR: .   # 你的 __init__.py 在仓库根目录
+
     steps:
       # ------------------------------
-      # Checkout main
+      # Checkout
       # ------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,121 +23,129 @@ jobs:
           tags: true
 
       # ------------------------------
-      # Read current version
+      # Read version from __init__.py
       # ------------------------------
-      - name: Read version from __init__.py
+      - name: Read version
         id: version
         run: |
+          INIT_FILE="${PACKAGE_DIR}/__init__.py"
+
+          if [ ! -f "$INIT_FILE" ]; then
+            echo "❌ __init__.py not found at $INIT_FILE"
+            exit 1
+          fi
+
           VERSION=$(python - << 'EOF'
           import re
           from pathlib import Path
 
-          content = Path("CodemaoEDUTools/__init__.py").read_text(encoding="utf-8")
-          match = re.search(r"__version__\s*=\s*['\"]([^'\"]+)['\"]", content)
-          if not match:
-              raise RuntimeError("Cannot find __version__")
-          print(match.group(1))
+          content = Path("__init__.py").read_text(encoding="utf-8")
+          m = re.search(r"__version__\s*=\s*['\"]([^'\"]+)['\"]", content)
+          if not m:
+              raise SystemExit("❌ __version__ not found")
+          print(m.group(1))
           EOF
           )
+
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       # ------------------------------
       # Get previous tag
       # ------------------------------
       - name: Get previous tag
-        id: prev_tag
+        id: prev
         run: |
           git fetch --tags
-          PREV_TAG=$(git tag --sort=-creatordate | head -n 1)
-          echo "prev_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+          PREV_TAG=$(git tag --sort=-creatordate | head -n 1 || true)
+          echo "tag=$PREV_TAG" >> $GITHUB_OUTPUT
 
       # ------------------------------
-      # Ensure version changed
+      # Ensure __version__ changed
       # ------------------------------
-      - name: Ensure version is updated
+      - name: Ensure version updated
         run: |
-          if [ -z "${{ steps.prev_tag.outputs.prev_tag }}" ]; then
+          if [ -z "${{ steps.prev.outputs.tag }}" ]; then
             echo "✅ First release, skip version check"
             exit 0
           fi
 
-          git show ${{ steps.prev_tag.outputs.prev_tag }}:CodemaoEDUTools/__init__.py > /tmp/old_init.py
+          git show ${{ steps.prev.outputs.tag }}:__init__.py > /tmp/old_init.py
 
           OLD_VERSION=$(python - << 'EOF'
-          import re
-          from pathlib import Path
-          content = Path("/tmp/old_init.py").read_text(encoding="utf-8")
+          import re, pathlib
+          content = pathlib.Path("/tmp/old_init.py").read_text()
           print(re.search(r"__version__\s*=\s*['\"]([^'\"]+)['\"]", content).group(1))
           EOF
           )
 
           if [ "$OLD_VERSION" = "${{ steps.version.outputs.version }}" ]; then
-            echo "❌ __version__ unchanged, abort release"
+            echo "❌ __version__ not changed ($OLD_VERSION)"
             exit 1
           fi
 
           echo "✅ Version changed: $OLD_VERSION → ${{ steps.version.outputs.version }}"
 
       # ------------------------------
-      # Fetch PR body via GitHub API
+      # Fetch merged PR body via API
       # ------------------------------
-      - name: Fetch merged PR body
+      - name: Fetch PR description
         id: pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_BODY=$(gh api \
+          BODY=$(gh api \
             repos/${{ github.repository }}/commits/${{ github.sha }}/pulls \
             --jq '.[0].body' 2>/dev/null || true)
 
-          if [ -z "$PR_BODY" ]; then
-            PR_BODY="（未找到关联的 PR，可能是直接 push 或 squash 方式不包含 PR body）"
+          if [ -z "$BODY" ]; then
+            BODY="（未找到关联的 PR）"
           fi
 
-          PR_BODY="${PR_BODY//$'\n'/%0A}"
-          echo "body=$PR_BODY" >> $GITHUB_OUTPUT
+          BODY="${BODY//$'\n'/%0A}"
+          echo "body=$BODY" >> $GITHUB_OUTPUT
 
       # ------------------------------
       # Generate commit diff changelog
       # ------------------------------
-      - name: Generate commit diff changelog
+      - name: Generate changelog
         id: changelog
         run: |
-          if [ -z "${{ steps.prev_tag.outputs.prev_tag }}" ]; then
-            CHANGELOG="首次发布"
+          if [ -z "${{ steps.prev.outputs.tag }}" ]; then
+            LOG="首次发布"
           else
-            CHANGELOG=$(git log ${{ steps.prev_tag.outputs.prev_tag }}..HEAD --oneline)
+            LOG=$(git log ${{ steps.prev.outputs.tag }}..HEAD --oneline)
           fi
 
-          CHANGELOG="${CHANGELOG//$'\n'/%0A}"
-          echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
+          LOG="${LOG//$'\n'/%0A}"
+          echo "log=$LOG" >> $GITHUB_OUTPUT
 
       # ------------------------------
-      # Prepare release directory
+      # Prepare clean release directory
       # ------------------------------
-      - name: Prepare release directory
+      - name: Prepare release files
         run: |
           mkdir release
           rsync -av \
             --exclude '.git' \
+            --exclude '.github' \
             --exclude 'doc' \
             --exclude '.gitignore' \
-            --exclude 'requirements.txt' \
             --exclude 'README.md' \
+            --exclude 'requirements.txt' \
             ./ release/
 
       # ------------------------------
-      # Package zip
+      # Create zip
       # ------------------------------
-      - name: Create zip package
+      - name: Create zip
         run: |
           cd release
           zip -r ../cet-${{ steps.version.outputs.version }}.zip .
 
       # ------------------------------
-      # Package tar.gz
+      # Create tar.gz
       # ------------------------------
-      - name: Create tar.gz package
+      - name: Create tar.gz
         run: |
           cd release
           tar -czf ../cet-${{ steps.version.outputs.version }}.tar.gz .
@@ -142,7 +153,7 @@ jobs:
       # ------------------------------
       # Create GitHub Release
       # ------------------------------
-      - name: Create GitHub Release
+      - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.version }}
@@ -154,7 +165,7 @@ jobs:
 
             ## 如果作为库使用
 
-            请直接将`CodemaoEDUTools`文件夹放置在项目的根目录，然后使用代码导入即可
+            请直接将 `CodemaoEDUTools` 仓库内容放置在项目根目录后导入使用
 
             ## 更新日志（Clean）
 
@@ -162,7 +173,7 @@ jobs:
 
             ## 更新日志（Commit Diff）
 
-            ${{ steps.changelog.outputs.changelog }}
+            ${{ steps.changelog.outputs.log }}
           files: |
             cet-${{ steps.version.outputs.version }}.zip
             cet-${{ steps.version.outputs.version }}.tar.gz
