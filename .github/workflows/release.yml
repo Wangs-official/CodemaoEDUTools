@@ -1,5 +1,8 @@
 name: Release on main
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
@@ -8,9 +11,6 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-
-    env:
-      PACKAGE_DIR: .   # __init__.py 在仓库根目录
 
     steps:
       # ==============================
@@ -23,13 +23,15 @@ jobs:
           tags: true
 
       # ==============================
-      # Read version from __init__.py
+      # Read version from CodemaoEDUTools/__init__.py
       # ==============================
       - name: Read version
         id: version
         run: |
-          if [ ! -f "__init__.py" ]; then
-            echo "❌ __init__.py not found in repo root"
+          INIT_FILE="CodemaoEDUTools/__init__.py"
+
+          if [ ! -f "$INIT_FILE" ]; then
+            echo "❌ $INIT_FILE not found"
             exit 1
           fi
 
@@ -37,7 +39,7 @@ jobs:
           import re
           from pathlib import Path
 
-          content = Path("__init__.py").read_text(encoding="utf-8")
+          content = Path("CodemaoEDUTools/__init__.py").read_text(encoding="utf-8")
           m = re.search(r"__version__\s*=\s*['\"]([^'\"]+)['\"]", content)
           if not m:
               raise SystemExit("❌ __version__ not found")
@@ -48,53 +50,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       # ==============================
-      # Get previous tag
-      # ==============================
-      - name: Get previous tag
-        id: prev
-        run: |
-          git fetch --tags
-          PREV_TAG=$(git tag --sort=-creatordate | head -n 1 || true)
-          echo "tag=$PREV_TAG" >> $GITHUB_OUTPUT
-
-      # ==============================
-      # Ensure __version__ updated
-      # ==============================
-      - name: Ensure version updated
-        run: |
-          if [ -z "${{ steps.prev.outputs.tag }}" ]; then
-            echo "✅ No previous tag, first release"
-            exit 0
-          fi
-
-          if ! git show ${{ steps.prev.outputs.tag }}:__init__.py > /tmp/old_init.py 2>/dev/null; then
-            echo "⚠️ Old __init__.py not found, skip version check"
-            exit 0
-          fi
-
-          OLD_VERSION=$(python - << 'EOF'
-          import re, pathlib
-
-          content = pathlib.Path("/tmp/old_init.py").read_text(encoding="utf-8")
-          m = re.search(r"__version__\s*=\s*['\"]([^'\"]+)['\"]", content)
-          print(m.group(1) if m else "")
-          EOF
-          )
-
-          if [ -z "$OLD_VERSION" ]; then
-            echo "⚠️ Old version not found, skip version check"
-            exit 0
-          fi
-
-          if [ "$OLD_VERSION" = "${{ steps.version.outputs.version }}" ]; then
-            echo "❌ __version__ not changed ($OLD_VERSION)"
-            exit 1
-          fi
-
-          echo "✅ Version changed: $OLD_VERSION → ${{ steps.version.outputs.version }}"
-
-      # ==============================
-      # Fetch merged PR body (API)
+      # Fetch merged PR body via API
       # ==============================
       - name: Fetch PR description
         id: pr
@@ -113,21 +69,6 @@ jobs:
           echo "body=$BODY" >> $GITHUB_OUTPUT
 
       # ==============================
-      # Generate commit diff changelog
-      # ==============================
-      - name: Generate changelog
-        id: changelog
-        run: |
-          if [ -z "${{ steps.prev.outputs.tag }}" ]; then
-            LOG="首次发布"
-          else
-            LOG=$(git log ${{ steps.prev.outputs.tag }}..HEAD --oneline)
-          fi
-
-          LOG="${LOG//$'\n'/%0A}"
-          echo "log=$LOG" >> $GITHUB_OUTPUT
-
-      # ==============================
       # Prepare clean release directory
       # ==============================
       - name: Prepare release files
@@ -139,7 +80,8 @@ jobs:
             --exclude 'doc' \
             --exclude '.gitignore' \
             --exclude 'README.md' \
-            --exclude 'requirements.txt' \
+            --exclude 'main.py' \
+            --exclude 'setup.py' \
             ./ release/
 
       # ==============================
@@ -159,6 +101,21 @@ jobs:
           tar -czf ../cet-${{ steps.version.outputs.version }}.tar.gz .
 
       # ==============================
+      # Build wheel (optional)
+      # ==============================
+      - name: Build wheel
+        id: wheel
+        continue-on-error: true
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          python setup.py bdist_wheel
+          WHEEL_FILE=$(ls dist/*.whl 2>/dev/null | head -n 1 || true)
+
+          if [ -n "$WHEEL_FILE" ]; then
+            echo "wheel=$WHEEL_FILE" >> $GITHUB_OUTPUT
+          fi
+
+      # ==============================
       # Create GitHub Release
       # ==============================
       - name: Publish GitHub Release
@@ -167,23 +124,29 @@ jobs:
           tag_name: ${{ steps.version.outputs.version }}
           name: Version ${{ steps.version.outputs.version }}
           body: |
-            ## 说明
+            <img src="https://s3.bmp.ovh/imgs/2024/10/25/7cd326afa68c3c6a.png" width="81" alt="言叶大魔王">
 
-            此发行版对应仓库版本${{ steps.version.outputs.version }}，精简体积，可直接作为库使用，也可以在CLI使用
+            ## 🔧 发行版说明：
 
-            ## 如果作为库使用
+            此发行版由GitHub Action生成，如果你要将CodemaoEDUTools作为库导入到项目内，请下载此发行版
 
-            请直接将仓库内容放置在项目根目录后导入使用
+            ## 🐱 不同之处：
 
-            ## 更新日志（Clean）
+            此发行版仅包含了 **CodemaoEDUTools** 库文件夹，同时也提供了可以直接安装的 wheel 包
+
+            ## 🔧 使用方法：
+
+            将整个 **CodemaoEDUTools** 库文件夹放入到你的项目内，或者下载 wheel 包进行本地安装
+
+            导入：`import CodemaoEDUTools`  
+            安装：`pip install <wheel包路径>` or `pip install`
+
+            ## 💻 更新日志
 
             ${{ steps.pr.outputs.body }}
-
-            ## 更新日志（Commit Diff）
-
-            ${{ steps.changelog.outputs.log }}
           files: |
             cet-${{ steps.version.outputs.version }}.zip
             cet-${{ steps.version.outputs.version }}.tar.gz
+            ${{ steps.wheel.outputs.wheel }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

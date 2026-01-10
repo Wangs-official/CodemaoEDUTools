@@ -1,24 +1,9 @@
-"""
-CodemaoEDUTools
-==================================
-作者: WangZixu
-GitHub: https://github.com/Wangs-official/CodemaoEDUTools/
-
-欢迎使用 CodemaoEDUTools!
-请阅读 doc/cli.md 中的命令行参数，或在你的程序中添加此库
-
-开发者不对您使用本项目造成的风险负责，请自行考虑是否使用，谢谢！
-请在开始使用前运行 pip3 install -r requirements.txt
-"""
-
 import json
 import logging
 import coloredlogs
 
-# 导入包功能
 from CodemaoEDUTools import CreateParser, __version__
 
-# 设置日志（与原来一致）
 coloredlogs.install(level="INFO", fmt="%(asctime)s - %(funcName)s: %(message)s")
 
 
