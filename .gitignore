@@ -6,3 +6,4 @@ venv
 *.xls
 *.xlsx
 tokens.txt
+/dist/
