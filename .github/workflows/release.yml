@@ -122,16 +122,18 @@ jobs:
 
             ## 🔧 发行版说明：
 
-            此发行版由 GitHub Action 自动生成，如果你要将 CodemaoEDUTools 作为库导入到项目内，请下载此发行版
+            此发行版由GitHub Action生成，如果你要将CodemaoEDUTools作为库导入到项目内，请下载此发行版
 
             ## 🐱 不同之处：
 
-            此发行版仅包含 **CodemaoEDUTools** 库文件夹，同时也提供可直接安装的 wheel 包
+            此发行版仅包含了 **CodemaoEDUTools** 库文件夹，同时也提供了可以直接安装的 wheel 包
 
             ## 🔧 使用方法：
 
-            - 直接复制 `CodemaoEDUTools` 文件夹
-            - 或安装 wheel：`pip install <wheel路径>`
+            将整个 **CodemaoEDUTools** 库文件夹放入到你的项目内，或者下载 wheel 包进行本地安装
+
+            导入：`import CodemaoEDUTools`
+            安装：`pip install <wheel包路径>` 或者 `pip install CodemaoEDUTools`
 
             ## 💻 更新日志
 

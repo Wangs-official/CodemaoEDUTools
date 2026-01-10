@@ -12,7 +12,7 @@ GitHub: https://github.com/Wangs-official/CodemaoEDUTools/
 
 __version__ = "1.9.0"
 __author__ = "WangZixu"
-__description__ = "为编程猫社区的”老师“们提供更便捷的API调用方案，且用且珍惜"
+__description__ = "为编程猫社区的“老师”们提供更便捷的API调用方案，且用且珍惜"
 
 # 线程配置
 max_workers = 8

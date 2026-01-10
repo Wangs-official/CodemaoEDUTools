@@ -10,7 +10,7 @@ setup(
     version=version,
     author="WangZixu",
     author_email="wangsofficial@outlook.com",
-    description="为编程猫社区的”老师“们提供更便捷的API调用方案，且用且珍惜",
+    description="为编程猫社区的“老师”们提供更便捷的API调用方案，且用且珍惜",
     long_description=open("README.md", encoding="utf-8").read()
     if os.path.exists("README.md")
     else "",
