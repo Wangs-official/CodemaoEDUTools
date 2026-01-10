@@ -16,47 +16,55 @@ jobs:
       # ======================
       # Checkout
       # ======================
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       # ======================
-      # Get version
+      # Read version from CodemaoEDUTools/__init__.py
       # ======================
       - name: Read version
         id: version
         run: |
-          python - << 'EOF'
-          import re, pathlib
-          text = pathlib.Path("CodemaoEDUTools/__init__.py").read_text()
+          python - << 'EOF' >> "$GITHUB_OUTPUT"
+          import re
+          from pathlib import Path
+
+          path = Path("CodemaoEDUTools/__init__.py")
+          if not path.exists():
+              raise SystemExit("❌ CodemaoEDUTools/__init__.py not found")
+
+          text = path.read_text(encoding="utf-8")
           m = re.search(r'__version__\s*=\s*"([^"]+)"', text)
           if not m:
               raise SystemExit("❌ __version__ not found")
+
           print(f"version={m.group(1)}")
-          EOF >> $GITHUB_OUTPUT
+          EOF
 
       # ======================
-      # Check tag not exists
+      # Ensure tag does not exist
       # ======================
-      - name: Check tag
+      - name: Check tag not exists
         run: |
           if git rev-parse "${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
-            echo "❌ Tag already exists"
+            echo "❌ Tag ${{ steps.version.outputs.version }} already exists"
             exit 1
           fi
 
       # ======================
       # Create & push tag
       # ======================
-      - name: Create tag
+      - name: Create and push tag
         run: |
           git tag ${{ steps.version.outputs.version }}
           git push origin ${{ steps.version.outputs.version }}
 
       # ======================
-      # Get merged PR description
+      # Get merged PR body via GitHub API
       # ======================
-      - name: Get PR body
+      - name: Get PR description
         id: pr
         uses: actions/github-script@v7
         with:
@@ -66,15 +74,16 @@ jobs:
               repo: context.repo.repo,
               state: "closed",
               base: "main",
-              per_page: 1
+              per_page: 5
             });
+
             const pr = prs.find(p => p.merge_commit_sha === context.sha);
-            return pr ? pr.body || "" : "";
+            return pr ? (pr.body || "") : "";
 
       # ======================
-      # Build release package
+      # Build release archives
       # ======================
-      - name: Build zip & tar
+      - name: Build zip and tar.gz
         run: |
           mkdir release
           rsync -av \
@@ -103,7 +112,7 @@ jobs:
       # ======================
       # Create GitHub Release
       # ======================
-      - name: Create Release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.version }}
@@ -117,11 +126,11 @@ jobs:
 
             ## 🐱 不同之处：
 
-            此发行版仅包含 **CodemaoEDUTools** 库文件夹，并提供可直接安装的 wheel 包
+            此发行版仅包含 **CodemaoEDUTools** 库文件夹，同时也提供可直接安装的 wheel 包
 
             ## 🔧 使用方法：
 
-            - 直接拷贝 `CodemaoEDUTools`
+            - 直接复制 `CodemaoEDUTools` 文件夹
             - 或安装 wheel：`pip install <wheel路径>`
 
             ## 💻 更新日志
@@ -133,10 +142,9 @@ jobs:
             dist/*.whl
 
       # ======================
-      # Publish PyPI
+      # Publish to PyPI
       # ======================
-      - name: Publish PyPI
-        if: success()
+      - name: Publish to PyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
