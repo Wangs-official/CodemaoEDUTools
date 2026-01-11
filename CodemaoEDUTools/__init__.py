@@ -10,9 +10,9 @@ GitHub: https://github.com/Wangs-official/CodemaoEDUTools/
 开发者不对您使用本项目造成的风险负责，请自行考虑是否使用，谢谢！
 """
 
-__version__ = "1.9.0"
+__version__ = "2.0.0"
 __author__ = "WangZixu"
-__description__ = "为编程猫社区的”老师“们提供更便捷的API调用方案，且用且珍惜"
+__description__ = "为编程猫社区的“老师”们提供更便捷的API调用方案，且用且珍惜"
 
 # 线程配置
 max_workers = 8
@@ -124,6 +124,8 @@ student_names = [
     "zxcvfdsx",
 ]
 
+# 请在创建新功能后更新此处！
+
 # API函数
 from .api import (
     PostAPI,
@@ -142,7 +144,7 @@ from .user import (
     FollowUser,
 )
 
-# 导入作品功能
+# 作品功能
 from .work import (
     GetUserWork,
     LikeWork,
@@ -154,7 +156,7 @@ from .work import (
     ForkWork,
 )
 
-# 导入EDU功能
+# EDU功能
 from .edu import (
     CreateClassOnEdu,
     CreateStudentOnEdu,
@@ -165,7 +167,7 @@ from .edu import (
 # 导入命令行
 from .cli import CreateParser
 
-# 导入控制
+# 请在创建新功能后更新此处！导入控制
 __all__ = [
     # 配置
     "__version__",
