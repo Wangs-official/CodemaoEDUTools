@@ -3,7 +3,7 @@
 <source media="(prefers-color-scheme: dark)" srcset="https://s3.bmp.ovh/imgs/2026/01/10/91c0f891ee56c72e.png">
 <img src="https://s3.bmp.ovh/imgs/2026/01/10/4a3a90eb41e5275b.png">
 </picture>
-<br><br>
+<br>
 <img src="https://img.shields.io/badge/Python-3776AB?style=flat&logo=Python&logoColor=ffffff">
 <img src="https://img.shields.io/github/license/Wangs-official/CodemaoEDUTools.svg">
 <img src="https://img.shields.io/github/stars/Wangs-official/CodemaoEDUTools.svg?style=social&label=Star&maxAge=2592000">
@@ -13,9 +13,6 @@
 |:-----------------:|:------------------:|:---------------------:|:-------------------:|
 | [点击进入](README.md) | [点击进入](doc/cli.md) | [点击进入](doc/import.md) | [点击进入](doc/code.md) |
 
-<b>开发者不对您使用本项目造成的风险负责，请自行考虑是否使用，谢谢</b>
-
-<hr>
 </div>
 
 ## 👋🏻 欢迎使用 CodemaoEDUTools！
@@ -26,12 +23,12 @@
 
 ## 🔧 安装
 
-1. 直接安装：`pypi install CodemaoEDUTools`
+1. 直接安装：`pip install CodemaoEDUTools`
 2. 本地Wheel安装：
    - 在 Relese 界面下载最新的 Wheel 包
    - 使用 `pip install <wheel包路径>` 进行安装
 3. 远古方式（这种方式不能使用命令行）：
-   - 在 Relese 界面下载最新的与压缩包
+   - 在 Relese 界面下载最新的压缩包
    - 将 **CodemaoEDUTools** 文件夹放入到你的项目里
 
 ## 😎 使用
@@ -45,6 +42,8 @@
 例如：`cet version`
 
 当然，你也可以通过 `python -m CodemaoEDUTools` 来使用这个工具
+
+我们已在 2.0 版本中移除了 main.py 文件，这意味着你无法像往常那样使用CET了
 
 ### 作为库调用
 
@@ -72,6 +71,12 @@
 
 仅接受 `.xlsx` 后缀文件
 
+## 👍🏻 程序默认值
+
+程序默认值在 `__init__.py` 内，有注释说明。由于是旧时代的产物，没有办法在直接安装时自定义，之后会加上的
+
+只有 CLI 才能使用程序默认值
+
 ## 📂 版本更新/分支
 
 - `main` 主分支，在此分支的代码为最新版本代码，会自动生成 Wheel 包以及压缩包
@@ -81,6 +86,8 @@
 我们会定期合并 `dev` 分支到 `main` 分支，以完成更新
 
 ## 🤔 免责声明/我怎么提问题？
+
+**开发者不对您使用本项目造成的风险负责，请自行考虑是否使用，谢谢**
 
 我只是一个搬运工，我把这些API组合到了一起，用的永远是你的Token，不是我的 ，出现的风险，官方找你什么的，别找我，技术无罪，我也无罪
 
@@ -103,7 +110,7 @@
 - CodemaoCommunityHistory/CodemaoEduAutoReg
 - CodemaoCommunityHistory/CodemaoPL
 
-## ❤️
+## ❤️ LRC
 
 > *結ばれた絆に 裏切ることない愛情 を*
 > 

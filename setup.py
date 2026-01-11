@@ -16,6 +16,7 @@ setup(
     else "",
     long_description_content_type="text/markdown",
     url="https://github.com/Wangs-official/CodemaoEDUTools",
+    license="MIT",
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

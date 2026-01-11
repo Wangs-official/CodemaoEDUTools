@@ -1,330 +1,131 @@
-# 🌏 作为库使用
+# 🧰 函数文档
 
-`import CodemaoEDUTools`
+这里是 **CodemaoEDUTools** 函数文档，在此文档中，你可以了解所有已定义的函数
 
-如果你想把这个程序作为库在你的代码中调用，请阅读此区域，了解可用的函数
+## API 调用函数
 
-如果你只是想从命令行使用，请阅读[此文档](cli.md)
+这些函数位于 `api.py` 内，用于调用编程猫API
 
-1. API
-2. 功能
-3. 用户
-4. 作品
-5. EDU
+UA 使用 `fake_useragent` 库自动生成
 
-## API (6)
+所有的 `Path` 参数均不包含域名，从 `/` 开始
 
 `*API`
 
-Header 已准备好，使用`UserAgent().random`随机生成UA
+### POST 方式调用 API
 
-### 使用POST方式调用API
+`PostAPI(Path: str, PostData: dict, Token: str) -> requests.Response`
 
-`PostAPI(Path: str, PostData: dict, Token: str)`
+### POST 方式匿名请求 API
 
-- Path: API路径，不包括 **https://api.codemao.cn** 部分
-- PostData: 字典格式的请求体
-- Token: 单个Token放入
+`def PostWithoutTokenAPI(Path: str, PostData: dict) -> requests.Response`
 
-携带Token，以POST方式调用一个编程猫API
+此函数请求时，无需携带令牌
 
-- 返回: `requests.Response`
+### POST 方式调用教育 API
 
-### 使用POST方式匿名调用API
+`PostEduAPI(Path: str, PostData: dict, Token: str) -> requests.Response`
 
-`PostWithoutTokenAPI(Path: str, PostData: dict)`
+此函数调用的是 `https://eduzone.codemao.cn{Path}"`
 
-- Path: API路径，不包括 **https://api.codemao.cn** 部分
-- PostData: 字典格式的请求体
+### GET 方式调用 API
 
-不携带Token，以POST方式调用一个编程猫API
+`GetAPI(Path: str, Token: str) -> requests.Response`
 
-- 返回类型: `requests.Response`
+### GET 方式匿名调用 API
 
-### 使用POST方式调用EduAPI
+`GetWithoutTokenAPI(Path: str) -> requests.Response`
 
-`PostEduAPI(Path: str, PostData: dict, Token: str)`
+此函数请求时，无需携带令牌
 
-- Path: API路径，不包括 **https://eduzone.codemao.cn** 部分
-- Token: 单个Token放入
+### PUT 方式调用 API
 
-携带Token，以POST方式调用一个编程猫EduAPI（https://eduzone.codemao.cn）
+`PutAPI(Path: str, Token: str) -> requests.Response`
 
-- 返回类型: `requests.Response`
+## 用户函数
 
-### 使用GET方式调用API
-
-`GetAPI(Path: str, Token: str)`
-
-- Path: API路径，不包括 **https://api.codemao.cn** 部分
-- Token: 单个Token放入
-
-携带Token，以GET方式调用一个编程猫API
-
-- 返回类型: `requests.Response`
-
-### 使用GET方式匿名调用API
-
-`GetWithoutTokenAPI(Path:str)`
-
-- Path: API路径，不包括 **https://api.codemao.cn** 部分
-
-不携带Token，以GET方式调用一个编程猫API
-
-- 返回类型: `requests.Response`
-
-### 使用PUT方式调用API
-
-`PutAPI(Path: str, Token: str)`
-
-- Path: API路径，不包括 **https://api.codemao.cn** 部分
-- Token: 单个Token放入
-
-携带Token，以PUT方式调用一个编程猫API
-
-- 返回类型: `requests.Response`
-
-## 功能 (2)
-
-### 确定Token数量
-
-`Check_TokenFile(Path: str)`
-
-- Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
-
-查看一个Token文件内，有多少个Token（读取行数）
-
-- 返回类型: `int`
-- 返回值: Token数量
-
-### 登录并获取用户Token
-
-`GetUserToken(Username: str, Password: str)`
-
-- Username: 用户名（手机号）
-- Password: 密码
-
-登录以获取一个用户的Token
-
-- 返回类型: `str | bool`
-- 返回值: 可用于请求的Token，请求失败时，返回False
-
-## 用户 (3)
+这些函数位于 `user.py` 内，是一些与用户有关的函数
 
 `*User`
 
+### 登录并获取用户 Token
+
+`GetUserToken(Username: str, Password: str) -> str | bool`
+
+### 确定 Token 数量
+
+`CheckToken(Path: str) -> int`
+
 ### 签订友好协议
 
-`SignatureUser(Path: str)`
-
-- Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
-
-签订友好协议，推荐在使用其他功能前统一签订一次友好协议，防止出现无法请求的情况
-
-- 返回类型: `bool`
-- 返回值: 请求完成后，返回**True**
+`SignatureUser(Path: str) -> bool`
 
 ### 关注用户
 
-`FollowUser(Path: str, UserID: str)`
+`FollowUser(Path: str, UserID: str) -> bool`
 
-- Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
-- UserID: 训练师编号
+## 作品函数
 
-批量关注一个用户，高情商就是刷粉丝
-
-- 返回类型: `bool`
-- 返回值: 请求完成后，返回**True**
-
-### 获取用户所有的作品
-
-`GetUserWork(UserID: str)`
-
-- UserID: 训练师编号
-
-获取一个用户的所有作品ID
-
-- 返回类型: `str | bool`
-- 返回值: 以 {作品ID}<空格>{作品ID} 格式返回，请求失败时，返回False
-
-## 作品 (7)
+这些函数位于 `work.py` 内，是一些与作品互动的函数
 
 `*Work`
 
+### 获取用户所有的作品
+
+`GetUserWork(UserID: str) -> str | bool`
+
 ### 点赞作品
 
-`LikeWork(Path: str, WorkID: str)`
-
-- Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
-- WorkID: 作品ID
-
-批量点赞一个作品
-
-- 返回类型: `bool`
-- 返回值: 请求完成后，返回**True**
+`LikeWork(Path: str, WorkID: str) -> bool`
 
 ### 收藏作品
 
-`CollectionWork(Path: str, WorkID: str)`
-
-- Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
-- WorkID: 作品ID
-
-批量收藏一个作品
-
-- 返回类型: `bool`
-- 返回值: 请求完成后，返回**True**
+`CollectionWork(Path: str, WorkID: str) -> bool`
 
 ### 举报作品
 
-`ReportWork(Path: str, WorkID: str, Reason: str, Describe: str)`
+`ReportWork(Path: str, WorkID: str, Reason: str, Describe: str) -> bool`
 
-- Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
-- WorkID: 作品ID
-- Reason: 原因，请参考下方给出的可用方式
-- Describe: 描述
+举报要求参见[此处](cli.md#举报作品)
 
-批量举报一个作品
-
-> [!IMPORTANT]
-> 默认只取Token文件内前二十个进行请求，可在程序中修改变量 `report_readtoken_line`
-
-> [!TIP]
-> 可用于举报的原因（Reason），与官网一致，直接填入即可，推荐使用**违法违规**举报理由
-> 
-> 1. 违法违规
-> 2. 色情低俗
-> 3. 脏话暴力
-> 4. 造谣、引战
-> 5. 抄袭
-> 6. 广告
-> 7. 其他
-
-- 返回类型: `bool`
-- 返回值: 请求完成后，返回**True**
+推荐只输入20个令牌
 
 ### 评论作品
 
-`SendReviewToWork(Path: str, WorkID: str, ReviewText: str)`
+`SendReviewToWork(Path: str, WorkID: str, ReviewText: str) -> bool`
 
-- Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
-- WorkID: 作品ID
-- ReviewText: 评论内容
+### 置顶作品（越权）
 
-在一个作品下，批量发送同样的评论
+`TopReview(Token: str, WorkID: str, CommentID: str) -> bool`
 
-- 返回类型: `bool`
-- 返回值: 请求完成后，返回**True**
+### 浏览作品（单刷）
 
-### 置顶评论（越权）
-
-`TopReview(Token: str, WorkID: str, CommentID: str)`
-
-- Token: **单个可用Token**
-- WorkID: 作品ID
-- CommentID: 评论ID
-
-依赖漏洞，可在不是创作者的情况下置顶某个评论
-
-- 返回类型: `bool`
-- 返回值: 请求完成后，返回**True**
-
-### 浏览作品
-
-`ViewWork(Token: str, WorkID: str)`
-
-- Token: **单个可用Token**
-- WorkID: 作品ID
-
-给作品加一个浏览，如果要一直刷，只需要循环这个函数就可以，一个Token就够
-
-- 返回类型: `bool`
-- 返回值: 请求完成后，返回**True**
+`ViewWork(Token: str, WorkID: str) -> bool`
 
 ### 再创作作品
 
-`ForkWork(Path: str, WorkID: str) -> bool:`
+`ForkWork(Path: str, WorkID: str) -> bool`
 
-- Path: Token文件路径，Token文件格式请参考README中的 **📃 文件格式**
-- WorkID: 作品ID
+## EDU函数
 
-再创作一个作品
+这些函数位于 `edu.py` 内，是一些关于编程猫教育平台的功能
 
-- 返回类型：`bool`
-- 返回值: 请求完成后，返回**True**
-
-## EDU (4)
+注：这部分的Token需要从编程猫教育平台（https://edu.codemao.cn）抓取，注册请自行寻法
 
 `*EDU`
 
 ### 添加新的班级
 
-`CreateClassOnEdu(Token: str, ClassName: str)`
+`CreateClassOnEdu(Token: str, ClassName: str) -> str`
 
-- Token: 单个可用Token，需从Edu内抓包
-- ClassName: 班级名称，遵循官方命名规则 
+### 添加学生到班级
 
-在Edu里添加一个新的班级
-
-- 返回类型: `str`
-- 返回值: 请求完成后，返回字符串形式的班级ID；如果请求失败，将返回字符“0”
-
-### 添加新的学生到班级
-
-`CreateStudentOnEdu(Token: str, ClassID: str, StudentNameList: list[str])`
-
-- Token: 单个可用Token，需从Edu内抓包
-- ClassID: 班级ID，自行抓包获取，或使用`CreateClassOnEdu`函数返回值
-- StudentNameList: 学生名字的列表，最多100个学生，学生命名遵循官方命名规则
-
-批量把创建新的学生并添加到班级内
-
-- 返回类型: `bytes`
-- 返回值: 请求完成后，返回含有学生账号密码表的excel二进制内容（遵循官方）。请将返回内容转存到以`.xls`结尾的表格文件中。如果请求失败，则返回None
-- 处理方式:
-```python
-import CodemaoEDUTools
-# ...省略变量定义
-with open("test.xls", wb) as f:
-    # 以写入字节模式打开 test.xls
-    f.write(CreateStudentOnEdu(Token="abc", ClassID="114514", StudentNameList= StuNameList))
-    f.close()
-# 写入学生信息完毕
-```
+`CreateStudentOnEdu(Token: str, ClassID: str, StudentNameList: list[str]`
 
 ### 合并生成的表格
 
-`MergeStudentXls(InputFolder: str, OutputFile:str)`
+`MergeStudentXls(InputFolder: str, OutputFile: str) -> bool`
 
-- InputFolder: 含有多个 **.xls** 文件的文件夹
-- OutputFile: 输出文件名，需要填写 **.xlsx** 后缀
+### 登录 EDU 账号
 
-使用`CreateStudentOnEdu()`函数后会输出散乱的xls文件，如果要合成为一个xlsx文件用于登录，请使用此函数
-
-- 返回类型: `bool`
-- 返回值: 操作完成后，返回**True**
-
-### 登录Edu账号
-
-`def LoginUseEdu(InputXlsx: str, OutputFile: str, Signature: bool)`
-
-- InputXlsx: 含有账号密码的xlsx表格文件的路径，文件格式请参考README中的 **📃 文件格式**
-- OutputFileName: 输出文件名，需要填写 **.txt** 后缀
-- Signature：是否在登录的同时签署友好协议，[1.2.0 新功能](update.md#version-120-20260101)
-
-批量登录所有在xlsx内保存的账号密码，并打印Token到指定的文件内
-
-- 返回类型: `bool`
-- 返回值: 操作完成后，返回**True**
-
-## 错误追踪
-
-当请求出现问题时，日志会输出以下内容
-
-1. `请求失败，状态码: xxx, 响应: xxx`
-
-    这种情况是API返回了异常
-
-2. `请求异常: xxx`
-
-    这种情况是Python自己出现了错误
+`LoginUseEdu(InputXlsx: str, OutputFile: str, Signature: bool = False) -> bool`

@@ -1,9 +1,11 @@
-.idea
-venv
+/.idea/
+/.vscode/
+/venv/
+/dist/
+/CodemaoEDUTools.egg-info/
 
 .DS_Store
 *.pyc
 *.xls
 *.xlsx
-tokens.txt
-/dist/
+*.txt
