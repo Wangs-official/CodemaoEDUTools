@@ -312,6 +312,6 @@ if args.command == "test-user":
 
 ### 版本号修改要求
 
-版本号位于 `__init__.py` 中的 `__version__` 变量，更新时，请将版本号最后一位+1
+版本号位于 `pyproject.toml` 文件，请将 `version` 的最后一位+1提交
 
 可能不会接受版本号未修改的PR

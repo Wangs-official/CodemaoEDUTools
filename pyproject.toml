@@ -1,7 +1,7 @@
 [project]
 name = "codemaoedutools"
-version = "2.1.0"
-description = "为编程猫社区的“老师”们提供更便捷的API调用方案，且用且珍惜"
+version = "2.1.5"
+description = '为编程猫社区的"老师"们提供更便捷的API调用方案，且用且珍惜'
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -15,3 +15,12 @@ dependencies = [
 
 [project.scripts]
 codemaoedutools = "CodemaoEDUTools.__main__:main"
+cet = "CodemaoEDUTools.__main__:main"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["CodemaoEDUTools"]
+include-package-data = true

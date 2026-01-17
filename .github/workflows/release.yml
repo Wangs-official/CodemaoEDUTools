@@ -96,7 +96,7 @@ jobs:
           python-version: '3.11'
 
       # ======================
-      # Install build dependencies (critical: packaging >= 23.1)
+      # Install build dependencies
       # ======================
       - name: Install build tools
         run: |
@@ -104,14 +104,14 @@ jobs:
           pip install uv
           uv venv
           uv sync
-          uv add "packaging>=23.1" build twine
+          uv add "packaging>=23.1" build twine  # 确保安装 twine
 
       # ======================
       # Build release archives
       # ======================
       - name: Build zip and tar.gz
         run: |
-          mkdir release
+          mkdir -p release
           rsync -av \
             --exclude .git \
             --exclude .github \
@@ -120,6 +120,7 @@ jobs:
             --exclude README.md \
             --exclude main.py \
             --exclude setup.py \
+            --exclude uv.lock \
             CodemaoEDUTools release/CodemaoEDUTools
 
           cd release
@@ -177,8 +178,12 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
-          if [ -d dist ]; then
-            python -m twine upload dist/*
+          if [ -d dist ] && [ -n "$(ls -A dist/* 2>/dev/null)" ]; then
+            echo "🚀 Uploading to PyPI..."
+            # 确保 twine 可用
+            uv pip install twine
+            uv run python -m twine upload dist/*
           else
-            echo "⚠️ No dist directory, skip PyPI"
+            echo "⚠️ No distribution files found, skipping PyPI upload"
+            ls -la dist/ 2>/dev/null || echo "dist directory does not exist"
           fi
