@@ -94,9 +94,13 @@ UA 使用 `fake_useragent` 库自动生成
 
 `SendReviewToWork(Path: str, WorkID: str, ReviewText: str) -> bool`
 
-### 置顶作品（越权）
+### 置顶评论（越权）
 
 `TopReview(Token: str, WorkID: str, CommentID: str) -> bool`
+
+### 取消置顶评论（越权）
+
+`UnTopReview(Token: str, WorkID: str, CommentID: str) -> bool`
 
 ### 浏览作品（单刷）
 
@@ -110,7 +114,7 @@ UA 使用 `fake_useragent` 库自动生成
 
 这些函数位于 `edu.py` 内，是一些关于编程猫教育平台的功能
 
-注：这部分的Token需要从编程猫教育平台（https://edu.codemao.cn）抓取，注册请自行寻法
+注：这部分的Token需要从编程猫教育平台（[https://edu.codemao.cn](https://edu.codemao.cn)）抓取，注册请自行寻法
 
 `*EDU`
 

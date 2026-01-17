@@ -2,9 +2,7 @@
 API调用
 """
 
-import json
 import logging
-from typing import Any
 
 import requests
 from fake_useragent import UserAgent
@@ -98,3 +96,16 @@ def PutAPI(Path: str, Token: str) -> requests.Response:
         "authorization": Token,
     }
     return requests.put(url=f"https://api.codemao.cn{Path}", headers=headers)
+
+def DeleteAPI(Path: str, Token: str) -> requests.Response:
+    """DELETE方式调用API"""
+    headers = {
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "User-Agent": UserAgent().random,
+        "authorization": Token,
+    }
+    return requests.delete(url=f"https://api.codemao.cn{Path}", headers=headers)
