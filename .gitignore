@@ -2,13 +2,11 @@
 /.vscode/
 /venv/
 /dist/
-/CodemaoEDUTools.egg-info/
+*.egg-info/
 
 .DS_Store
-pyproject.toml
-.gitignore
 .python-version
-uv.lock
+.venv
 *.pyc
 *.xls
 *.xlsx
