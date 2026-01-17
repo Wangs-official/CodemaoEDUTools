@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       # ======================
-      # Read version from CodemaoEDUTools/__init__.py
+      # Read version from pyproject.toml
       # ======================
       - name: Read version
         id: version
@@ -31,14 +31,14 @@ jobs:
           import re
           from pathlib import Path
 
-          path = Path("CodemaoEDUTools/__init__.py")
+          path = Path("pyproject.toml")
           if not path.exists():
-              raise SystemExit("❌ CodemaoEDUTools/__init__.py not found")
+              raise SystemExit("❌ pyproject.toml not found")
 
           text = path.read_text(encoding="utf-8")
-          m = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', text)
+          m = re.search(r'version = "(.*?)"', text)
           if not m:
-              raise SystemExit("❌ __version__ not found")
+              raise SystemExit("❌ version not found")
 
           print(f"version={m.group(1)}")
           EOF
@@ -46,7 +46,7 @@ jobs:
       # ======================
       # Ensure tag does not exist
       # ======================
-      - name: Check tag not exists
+      - name: Check tag not exist
         run: |
           if git rev-parse "${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
             echo "❌ Tag ${{ steps.version.outputs.version }} already exists"
@@ -93,7 +93,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.11'
 
       # ======================
       # Install build dependencies (critical: packaging >= 23.1)
@@ -101,7 +101,10 @@ jobs:
       - name: Install build tools
         run: |
           python -m pip install --upgrade pip
-          pip install "packaging>=23.1" build twine
+          pip install uv
+          uv venv
+          uv sync
+          uv add "packaging>=23.1" build twine
 
       # ======================
       # Build release archives
@@ -129,7 +132,7 @@ jobs:
       - name: Build Python package
         run: |
           rm -rf build dist *.egg-info
-          python -m build
+          uv run python -m build
 
       # ======================
       # Create GitHub Release
