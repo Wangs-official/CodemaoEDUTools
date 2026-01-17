@@ -108,16 +108,6 @@ jobs:
           tar czf ../cet-${{ steps.version.outputs.version }}.tar.gz CodemaoEDUTools
 
       # ======================
-      # Clean & build wheel (optional)
-      # ======================
-      - name: Build wheel
-        continue-on-error: true
-        run: |
-          python -m pip install --upgrade pip setuptools wheel build
-          rm -rf build dist *.egg-info
-          python -m build
-
-      # ======================
       # Create GitHub Release
       # ======================
       - name: Create GitHub Release
@@ -160,6 +150,9 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
+          python -m pip install --upgrade pip setuptools wheel build
+          rm -rf build dist *.egg-info
+          python -m build
           if [ -d dist ]; then
             python -m pip install --upgrade twine
             python -m twine upload dist/*
