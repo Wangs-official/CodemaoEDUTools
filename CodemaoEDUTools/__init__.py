@@ -9,8 +9,12 @@ GitHub: https://github.com/Wangs-official/CodemaoEDUTools/
 
 开发者不对您使用本项目造成的风险负责，请自行考虑是否使用，谢谢！
 """
+from importlib.metadata import version, PackageNotFoundError
 
-__version__ = open("pyproject.toml").read().split("\n")[2].split('"')[1].split('"')[0] # TODO: use TOML parser
+try:
+    __version__ = version("CodemaoEDUTools")
+except PackageNotFoundError:
+    __version__ = "0.0.0"
 __author__ = "WangZixu"
 __description__ = "为编程猫社区的“老师”们提供更便捷的API调用方案，且用且珍惜"
 
