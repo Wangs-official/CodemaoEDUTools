@@ -23,7 +23,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.10",
     install_requires=[
         "requests>=2.25.1",
         "fake-useragent>=0.1.11",
