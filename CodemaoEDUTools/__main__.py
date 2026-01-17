@@ -91,6 +91,13 @@ def main():
         logging.info("请稍后...")
         if TopReview(args.one_token, args.work_id, args.comment_id):
             logging.info("执行成功")
+    
+    if args.command == "unreview-top":
+        from CodemaoEDUTools import UnTopReview
+
+        logging.info("请稍后...")
+        if UnTopReview(args.one_token, args.work_id, args.comment_id):
+            logging.info("执行成功")
 
     if args.command == "view-work":
         from CodemaoEDUTools import ViewWork

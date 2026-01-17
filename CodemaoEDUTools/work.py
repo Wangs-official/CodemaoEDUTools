@@ -6,9 +6,8 @@ import json
 import logging
 import os
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any
 
-from .api import PostAPI, GetWithoutTokenAPI, PutAPI, GetAPI
+from .api import PostAPI, GetWithoutTokenAPI, PutAPI, GetAPI, DeleteAPI
 from .user import CheckToken
 
 
@@ -167,6 +166,17 @@ def TopReview(Token: str, WorkID: str, CommentID: str) -> bool:
     """置顶评论（越权）"""
     try:
         response = PutAPI(
+            f"/creation-tools/v1/works/{WorkID}/comment/{CommentID}/top", Token=Token
+        )
+        return response.status_code == 204
+    except Exception as e:
+        logger.error(f"请求异常：{str(e)}")
+        return False
+
+def UnTopReview(Token: str, WorkID: str, CommentID: str) -> bool:
+    """取消置顶评论（越权）"""
+    try:
+        response = DeleteAPI(
             f"/creation-tools/v1/works/{WorkID}/comment/{CommentID}/top", Token=Token
         )
         return response.status_code == 204

@@ -4,7 +4,7 @@
 
 ## 项目结构
 
-```
+```txt
 .
 ├── CodemaoEDUTools
 │   ├── __init__.py
@@ -30,7 +30,7 @@
 
 | **函数后缀** | **对应功能类别** | **举例**             |
 |:----------:|:------------:|:--------------------:|
-| *API     | API类别      | PostAPI()          |
+| *API | API类别      | PostAPI()          |
 | 无        | 功能类别       | 无                  |
 | *User    | 用户类别       | FollowUser()       |
 | *Work    | 作品类别       | LikeWork()         |
@@ -186,7 +186,7 @@ if args.command == "<命令名>":
 
 接下来，写一个实例：使用GET请求接口`/test`来测试用户，接口返回值为成功/失败（通过状态码判断）
 
-**user.py**
+#### user.py
 
 ```python
 ...省去上方内容
@@ -224,7 +224,7 @@ def TestUser(Path:str, UserID:str) -> bool:
         return True
 ```
 
-**cli.py**
+#### cli.py
 
 ```python
 # TestUser(Path:str, UserID:str)
@@ -283,7 +283,7 @@ if args.command == "test-user":
 
 请按照模板填写两个框，其中的**更新日志**这样填写：
 
-```
+```txt
 [+] 这是新功能的TAG，在这里写添加的新功能
 [x] 这是删除功能的TAG，在这里填写删除的功能
 [~] 这是轻修改TAG，在这里填写修复BUG/对代码进行优化的描述
@@ -291,7 +291,7 @@ if args.command == "test-user":
 
 比如添加了一个TestUser的功能，就这样写，要写无序列表
 
-```
+```txt
 - [+] 新增功能：测试用户，使用`test-user`
 ```
 
