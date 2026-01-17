@@ -12,9 +12,19 @@ def main():
     args = parser.parse_args()
 
     if args.command is None:
-        logging.info("CodemaoEDUTools CLI Version")
-        logging.info("您正在使用的是 CodemaoEDUTools 的命令行版本")
-        logging.info('输入 "-h" 获得使用帮助')
+        logging.info(f'''
+ ██████╗ ██████╗ ██████╗ ███████╗███╗   ███╗ █████╗  ██████╗ ███████╗██████╗ ██╗   ██╗████████╗ ██████╗  ██████╗ ██╗     ███████╗
+██╔════╝██╔═══██╗██╔══██╗██╔════╝████╗ ████║██╔══██╗██╔═══██╗██╔════╝██╔══██╗██║   ██║╚══██╔══╝██╔═══██╗██╔═══██╗██║     ██╔════╝
+██║     ██║   ██║██║  ██║█████╗  ██╔████╔██║███████║██║   ██║█████╗  ██║  ██║██║   ██║   ██║   ██║   ██║██║   ██║██║     ███████╗
+██║     ██║   ██║██║  ██║██╔══╝  ██║╚██╔╝██║██╔══██║██║   ██║██╔══╝  ██║  ██║██║   ██║   ██║   ██║   ██║██║   ██║██║     ╚════██║
+╚██████╗╚██████╔╝██████╔╝███████╗██║ ╚═╝ ██║██║  ██║╚██████╔╝███████╗██████╔╝╚██████╔╝   ██║   ╚██████╔╝╚██████╔╝███████╗███████║
+ ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═════╝  ╚═════╝    ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝╚══════╝
+-==============================================================================-
+欢迎使用CodemaoEDUTools CLI Version {__version__}
+您正在使用的是 CodemaoEDUTools 的命令行版本
+输入 "-h" 获得使用帮助
+-==============================================================================-
+''')
 
     if args.command == "check-token":
         from CodemaoEDUTools import CheckToken
@@ -90,6 +100,13 @@ def main():
 
         logging.info("请稍后...")
         if TopReview(args.one_token, args.work_id, args.comment_id):
+            logging.info("执行成功")
+    
+    if args.command == "unreview-top":
+        from CodemaoEDUTools import UnTopReview
+
+        logging.info("请稍后...")
+        if UnTopReview(args.one_token, args.work_id, args.comment_id):
             logging.info("执行成功")
 
     if args.command == "view-work":
