@@ -10,7 +10,7 @@ GitHub: https://github.com/Wangs-official/CodemaoEDUTools/
 开发者不对您使用本项目造成的风险负责，请自行考虑是否使用，谢谢！
 """
 
-__version__ = "2.0.1"
+__version__ = "2.1.0"
 __author__ = "WangZixu"
 __description__ = "为编程猫社区的“老师”们提供更便捷的API调用方案，且用且珍惜"
 

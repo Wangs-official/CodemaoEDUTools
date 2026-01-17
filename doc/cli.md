@@ -86,7 +86,7 @@
 
 ### 取消置顶评论（越权）
 
-`cet unreview-top -wid <作品ID> -cid <评论ID> -t <单个可用Token>`
+`cet review-untop -wid <作品ID> -cid <评论ID> -t <单个可用Token>`
 
 - 此功能只需要一个 Token，请自行填写
 

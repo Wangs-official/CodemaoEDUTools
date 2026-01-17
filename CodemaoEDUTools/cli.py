@@ -92,7 +92,7 @@ def CreateParser():
     topreview_parser.add_argument("-cid", "--comment-id", required=True, help="评论ID")
 
     # UnTopReview(Token: str, WorkID: str, CommentID: str)
-    untopreview_parser = subparsers.add_parser("unreview-top", help="越权取消置顶某个评论")
+    untopreview_parser = subparsers.add_parser("review-untop", help="越权取消置顶某个评论")
     untopreview_parser.add_argument(
         "-t", "--one-token", required=True, help="一个可用Token"
     )
