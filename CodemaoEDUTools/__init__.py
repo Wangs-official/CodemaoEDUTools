@@ -10,7 +10,7 @@ GitHub: https://github.com/Wangs-official/CodemaoEDUTools/
 开发者不对您使用本项目造成的风险负责，请自行考虑是否使用，谢谢！
 """
 
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 __author__ = "WangZixu"
 __description__ = "为编程猫社区的“老师”们提供更便捷的API调用方案，且用且珍惜"
 
@@ -127,17 +127,18 @@ student_names = [
 # 请在创建新功能后更新此处！
 
 # API函数
-from .api import (
+from .api import (  # noqa: E402
     PostAPI,
     PostWithoutTokenAPI,
     PostEduAPI,
     GetAPI,
     GetWithoutTokenAPI,
     PutAPI,
+    DeleteAPI,
 )
 
 # 用户功能
-from .user import (
+from .user import (  # noqa: E402
     GetUserToken,
     CheckToken,
     SignatureUser,
@@ -145,19 +146,20 @@ from .user import (
 )
 
 # 作品功能
-from .work import (
+from .work import (  # noqa: E402
     GetUserWork,
     LikeWork,
     CollectionWork,
     ReportWork,
     SendReviewToWork,
     TopReview,
+    UnTopReview,
     ViewWork,
     ForkWork,
 )
 
 # EDU功能
-from .edu import (
+from .edu import (  # noqa: E402
     CreateClassOnEdu,
     CreateStudentOnEdu,
     MergeStudentXls,
@@ -165,7 +167,7 @@ from .edu import (
 )
 
 # 导入命令行
-from .cli import CreateParser
+from .cli import CreateParser  # noqa: E402
 
 # 请在创建新功能后更新此处！导入控制
 __all__ = [
@@ -183,6 +185,7 @@ __all__ = [
     "GetAPI",
     "GetWithoutTokenAPI",
     "PutAPI",
+    "DeleteAPI",
     # 用户
     "GetUserToken",
     "CheckToken",
@@ -195,6 +198,7 @@ __all__ = [
     "ReportWork",
     "SendReviewToWork",
     "TopReview",
+    "UnTopReview",
     "ViewWork",
     "ForkWork",
     # 教育版

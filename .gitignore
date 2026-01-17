@@ -5,6 +5,10 @@
 /CodemaoEDUTools.egg-info/
 
 .DS_Store
+pyproject.toml
+.gitignore
+.python-version
+uv.lock
 *.pyc
 *.xls
 *.xlsx

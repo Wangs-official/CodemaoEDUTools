@@ -84,6 +84,12 @@
 
 - 此功能只需要一个 Token，请自行填写
 
+### 取消置顶评论（越权）
+
+`cet review-untop -wid <作品ID> -cid <评论ID> -t <单个可用Token>`
+
+- 此功能只需要一个 Token，请自行填写
+
 ### 浏览作品（单刷）
 
 `cet view-work -wid <作品ID> -t <单个可用Token>`
@@ -98,7 +104,7 @@
 
 这些功能被定义在  `edu.py`，是一些关于编程猫教育平台的功能
 
-注：这部分的Token需要从编程猫教育平台（https://edu.codemao.cn）抓取，注册请自行寻法
+注：这部分的Token需要从编程猫教育平台（[https://edu.codemao.cn](https://edu.codemao.cn)）抓取，注册请自行寻法
 
 ### 创建新的班级
 
@@ -120,7 +126,7 @@
 
 ### 批量登录EDU账号
 
-`cet login-edu -i <含有账号密码的xlsx表格路径> -o <输出文件名> -s <是否同时签署友好协议> `
+`cet login-edu -i <含有账号密码的xlsx表格路径> -o <输出文件名> -s <是否同时签署友好协议>`
 
 - 输出文件名默认为 `tokens.txt`
-- -s 参数接受布尔值
+- -s 参数接受布尔

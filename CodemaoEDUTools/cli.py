@@ -91,6 +91,14 @@ def CreateParser():
     topreview_parser.add_argument("-wid", "--work-id", required=True, help="作品ID")
     topreview_parser.add_argument("-cid", "--comment-id", required=True, help="评论ID")
 
+    # UnTopReview(Token: str, WorkID: str, CommentID: str)
+    untopreview_parser = subparsers.add_parser("review-untop", help="越权取消置顶某个评论")
+    untopreview_parser.add_argument(
+        "-t", "--one-token", required=True, help="一个可用Token"
+    )
+    untopreview_parser.add_argument("-wid", "--work-id", required=True, help="作品ID")
+    untopreview_parser.add_argument("-cid", "--comment-id", required=True, help="评论ID")
+
     # ViewWork(Token: str, WorkID: str)
     viewwork_parser = subparsers.add_parser("view-work", help="给作品加一个浏览")
     viewwork_parser.add_argument(

@@ -110,7 +110,11 @@
 - CodemaoCommunityHistory/CodemaoEduAutoReg
 - CodemaoCommunityHistory/CodemaoPL
 
-## ❤️ LRC
+## ❤️ 感谢各位贡献者
+
+<a href="https://github.com/wangs-official/codemaoedutools/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=wangs-official/codemaoedutools" />
+</a><br/><br/>
 
 > *結ばれた絆に 裏切ることない愛情 を*
 > 
