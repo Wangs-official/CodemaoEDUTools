@@ -41,7 +41,7 @@
 
 例如：`cet version`
 
-当然，你也可以通过 `uv run CodemaoEDUTools` 来使用这个工具
+当然，你也可以在运行 `uv pip install -e .` 后通过 `uv run CodemaoEDUTools` 来使用这个工具
 
 我们在 2.1.0 版本中将项目管理器变更为了 uv，这意味着你无法像往常那样使用CET了
 
